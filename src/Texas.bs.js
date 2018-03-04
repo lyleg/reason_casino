@@ -5,7 +5,6 @@ var Block                      = require("bs-platform/lib/js/block.js");
 var Curry                      = require("bs-platform/lib/js/curry.js");
 var React                      = require("react");
 var ReasonReact                = require("reason-react/src/ReasonReact.js");
-var Deck$ReactTemplate         = require("./Deck.bs.js");
 var TexasGame$ReactTemplate    = require("./TexasGame.bs.js");
 var PokerStats$ReactTemplate   = require("./components/PokerStats.bs.js");
 var PokerPrompt$ReactTemplate  = require("./components/PokerPrompt.bs.js");
@@ -13,40 +12,29 @@ var PrintPlayers$ReactTemplate = require("./components/PrintPlayers.bs.js");
 
 var component = ReasonReact.reducerComponent("Texas");
 
-function deal(players) {
-  var deck = Deck$ReactTemplate.makeDeck(/* () */0);
-  var shuffledDeck = Deck$ReactTemplate.shuffle(deck);
-  return TexasGame$ReactTemplate.dealFlop(shuffledDeck, players);
-}
-
 function make() {
   var newrecord = component.slice();
   newrecord[/* render */9] = (function (self) {
-      return React.createElement("div", undefined, React.createElement("div", undefined, ReasonReact.element(/* None */0, /* None */0, PrintPlayers$ReactTemplate.make(self[/* state */2][/* players */2], /* array */[])), ReasonReact.element(/* None */0, /* None */0, PokerPrompt$ReactTemplate.make(self[/* state */2][/* prompt */1], (function (action) {
+      return React.createElement("div", undefined, React.createElement("div", undefined, ReasonReact.element(/* None */0, /* None */0, PrintPlayers$ReactTemplate.make(self[/* state */2][/* players */1], /* array */[])), ReasonReact.element(/* None */0, /* None */0, PokerPrompt$ReactTemplate.make(self[/* state */2][/* game */2], (function (action) {
                                 return Curry._1(self[/* send */4], action);
-                              }), /* array */[])), ReasonReact.element(/* None */0, /* None */0, PokerStats$ReactTemplate.make(self[/* state */2][/* game */3], self[/* state */2][/* players */2], /* array */[]))));
+                              }), /* array */[])), ReasonReact.element(/* None */0, /* None */0, PokerStats$ReactTemplate.make(self[/* state */2][/* game */2], self[/* state */2][/* players */1], /* array */[]))));
     });
   newrecord[/* initialState */10] = (function () {
       return /* record */[
               /* deck : [] */0,
-              /* prompt : false */0,
               /* players : :: */[
                 /* record */[
                   /* id */1,
-                  /* hand : [] */0
+                  /* hand : [] */0,
+                  /* name */"John"
                 ],
                 /* :: */[
                   /* record */[
                     /* id */2,
-                    /* hand : [] */0
+                    /* hand : [] */0,
+                    /* name */"Lyle"
                   ],
-                  /* :: */[
-                    /* record */[
-                      /* id */3,
-                      /* hand : [] */0
-                    ],
-                    /* [] */0
-                  ]
+                  /* [] */0
                 ]
               ],
               /* game : PreFlop */0
@@ -54,20 +42,17 @@ function make() {
     });
   newrecord[/* reducer */12] = (function (action, state) {
       if (action !== 0) {
-        console.log("promptToggle");
         return /* Update */Block.__(0, [/* record */[
                     /* deck */state[/* deck */0],
-                    /* prompt : false */0,
-                    /* players */state[/* players */2],
-                    /* game */state[/* game */3]
+                    /* players */state[/* players */1],
+                    /* game : Middle */2
                   ]]);
       } else {
-        var match = deal(state[/* players */2]);
+        var match = TexasGame$ReactTemplate.deal(state[/* players */1]);
         return /* Update */Block.__(0, [/* record */[
                     /* deck */match[0],
-                    /* prompt : true */1,
                     /* players */match[1],
-                    /* game */state[/* game */3]
+                    /* game : Middle */2
                   ]]);
       }
     });
@@ -75,6 +60,5 @@ function make() {
 }
 
 exports.component = component;
-exports.deal      = deal;
 exports.make      = make;
 /* component Not a pure module */

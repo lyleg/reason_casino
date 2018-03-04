@@ -7,21 +7,22 @@ var ReasonReact = require("reason-react/src/ReasonReact.js");
 
 var component = ReasonReact.statelessComponent("PokerPrompt");
 
-function make(prompt, onPrompt, _) {
+function make(game, onPrompt, _) {
   var newrecord = component.slice();
   newrecord[/* render */9] = (function () {
-      if (prompt !== 0) {
-        return React.createElement("a", {
-                    onClick: (function () {
-                        return Curry._1(onPrompt, /* Prompt */1);
-                      })
-                  }, "Prompt");
-      } else {
+      var match = +(game === /* PreFlop */0);
+      if (match !== 0) {
         return React.createElement("a", {
                     onClick: (function () {
                         return Curry._1(onPrompt, /* Deal */0);
                       })
                   }, "Deal");
+      } else {
+        return React.createElement("a", {
+                    onClick: (function () {
+                        return Curry._1(onPrompt, /* Prompt */1);
+                      })
+                  }, "Prompt");
       }
     });
   return newrecord;

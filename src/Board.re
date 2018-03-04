@@ -4,7 +4,8 @@ type hand = list(card);
 
 type player = {
   id: int,
-  hand
+  hand,
+  name: string
 };
 
 type players = list(player);

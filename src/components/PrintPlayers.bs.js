@@ -24,9 +24,12 @@ function make(players, _) {
                                     console.log(Card$ReactTemplate.printCard(card));
                                     return /* () */0;
                                   }), player[/* hand */1]);
-                            return React.createElement("span", {
-                                        key: Pervasives.string_of_int(idx)
-                                      }, Pervasives.string_of_int(player[/* id */0]), ReasonReact.element(/* None */0, /* None */0, Hand$ReactTemplate.make(player[/* hand */1], /* array */[])));
+                            return React.createElement("div", {
+                                        key: Pervasives.string_of_int(idx),
+                                        style: {
+                                          marginBottom: "20px"
+                                        }
+                                      }, player[/* name */2], " (" + (Pervasives.string_of_int(player[/* id */0]) + ")"), ReasonReact.element(/* None */0, /* None */0, Hand$ReactTemplate.make(player[/* hand */1], /* array */[])));
                           }), players)));
     });
   return newrecord;

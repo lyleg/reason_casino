@@ -13,10 +13,12 @@ let make = (~players, _children) => {
             List.mapi(
               (idx, player) => {
                 List.map((card) => Js.log(Card.printCard(card)), player.hand);
-                <span key=(string_of_int(idx))>
-                  (ReasonReact.stringToElement(string_of_int(player.id)))
+                <div
+                  key=(string_of_int(idx)) style=(ReactDOMRe.Style.make(~marginBottom="20px", ()))>
+                  (ReasonReact.stringToElement(player.name))
+                  (ReasonReact.stringToElement(" (" ++ string_of_int(player.id) ++ ")"))
                   <Hand hand=player.hand />
-                </span>
+                </div>
               },
               players
             )

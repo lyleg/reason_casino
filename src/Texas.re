@@ -13,43 +13,34 @@ open Board;
 
 type state = {
   deck,
-  prompt,
   players,
   game
 };
 
 let component = ReasonReact.reducerComponent("Texas");
 
-let deal = (players) => {
-  let deck = Deck.makeDeck();
-  let shuffledDeck = Deck.shuffle(deck);
-  dealFlop(shuffledDeck, players)
-};
-
 let make = (_children) => {
   ...component,
   initialState: () => {
     deck: [],
     game: PreFlop,
-    prompt: false,
-    players: [{id: 1, hand: []}, {id: 2, hand: []}, {id: 3, hand: []}]
+    players: [{id: 1, hand: [], name: "John"}, {id: 2, hand: [], name: "Lyle"}]
   },
   reducer: (action, state) =>
     switch action {
     | Deal =>
       let (deck, players) = deal(state.players);
-      let prompt = true;
-      ReasonReact.Update({...state, deck, players, prompt})
+      let game = Middle;
+      ReasonReact.Update({...state, deck, players, game})
     | Prompt =>
-      Js.log("promptToggle");
-      let prompt = false;
-      ReasonReact.Update({...state, prompt})
+      let game = Middle;
+      ReasonReact.Update({...state, game})
     },
   render: (self) =>
     <div>
       <div>
         <PrintPlayers players=self.state.players />
-        <PokerPrompt prompt=self.state.prompt onPrompt=((action: action) => self.send(action)) />
+        <PokerPrompt game=self.state.game onPrompt=((action: action) => self.send(action)) />
         <PokerStats game=self.state.game players=self.state.players />
       </div>
     </div>

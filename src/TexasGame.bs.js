@@ -11,12 +11,15 @@ function dealToPlayers(_board, _playersToBeDelt, numCards) {
     var playersToBeDelt = _playersToBeDelt;
     var board = _board;
     if (playersToBeDelt) {
+      var hd = playersToBeDelt[0];
       var match = Deck$ReactTemplate.getCards(/* [] */0, board[0], numCards);
-      var playerWithNewCard_000 = /* id */playersToBeDelt[0][/* id */0];
+      var playerWithNewCard_000 = /* id */hd[/* id */0];
       var playerWithNewCard_001 = /* hand */match[0];
+      var playerWithNewCard_002 = /* name */hd[/* name */2];
       var playerWithNewCard = /* record */[
         playerWithNewCard_000,
-        playerWithNewCard_001
+        playerWithNewCard_001,
+        playerWithNewCard_002
       ];
       var newPlayers = List.append(board[1], /* :: */[
             playerWithNewCard,
