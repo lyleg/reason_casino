@@ -45,6 +45,12 @@ function dealFlop(deck, players) {
   return dealToPlayers(board, players, 2);
 }
 
+function deal(players) {
+  var deck = Deck$ReactTemplate.makeDeck(/* () */0);
+  var shuffledDeck = Deck$ReactTemplate.shuffle(deck);
+  return dealFlop(shuffledDeck, players);
+}
+
 function printPlayers(players) {
   return List.map((function (player) {
                 console.log("****** Player " + (Pervasives.string_of_int(player[/* id */0]) + " *******"));
@@ -57,5 +63,6 @@ function printPlayers(players) {
 
 exports.dealToPlayers = dealToPlayers;
 exports.dealFlop      = dealFlop;
+exports.deal          = deal;
 exports.printPlayers  = printPlayers;
 /* Card-ReactTemplate Not a pure module */

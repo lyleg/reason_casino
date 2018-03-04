@@ -30703,10 +30703,10 @@ var PrintPlayers$ReactTemplate = __webpack_require__(220);
 
 var component = ReasonReact.reducerComponent("Texas");
 
-function deal(state) {
+function deal(players) {
   var deck = Deck$ReactTemplate.makeDeck(/* () */0);
   var shuffledDeck = Deck$ReactTemplate.shuffle(deck);
-  return TexasGame$ReactTemplate.dealFlop(shuffledDeck, state[/* players */2]);
+  return TexasGame$ReactTemplate.dealFlop(shuffledDeck, players);
 }
 
 function make() {
@@ -30752,7 +30752,7 @@ function make() {
                     /* game */state[/* game */3]
                   ]]);
       } else {
-        var match = deal(state);
+        var match = deal(state[/* players */2]);
         return /* Update */Block.__(0, [/* record */[
                     /* deck */match[0],
                     /* prompt : true */1,
@@ -32325,6 +32325,12 @@ function dealFlop(deck, players) {
   return dealToPlayers(board, players, 2);
 }
 
+function deal(players) {
+  var deck = Deck$ReactTemplate.makeDeck(/* () */0);
+  var shuffledDeck = Deck$ReactTemplate.shuffle(deck);
+  return dealFlop(shuffledDeck, players);
+}
+
 function printPlayers(players) {
   return List.map((function (player) {
                 console.log("****** Player " + (Pervasives.string_of_int(player[/* id */0]) + " *******"));
@@ -32337,6 +32343,7 @@ function printPlayers(players) {
 
 exports.dealToPlayers = dealToPlayers;
 exports.dealFlop      = dealFlop;
+exports.deal          = deal;
 exports.printPlayers  = printPlayers;
 /* Card-ReactTemplate Not a pure module */
 

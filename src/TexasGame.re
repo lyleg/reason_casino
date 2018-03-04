@@ -34,6 +34,12 @@ let dealFlop = (deck, players) => {
   dealToPlayers(board, players, 2)
 };
 
+let deal = (players) => {
+  let deck = Deck.makeDeck();
+  let shuffledDeck = Deck.shuffle(deck);
+  dealFlop(shuffledDeck, players)
+};
+
 let printPlayers = (players) =>
   List.map(
     (player) => {

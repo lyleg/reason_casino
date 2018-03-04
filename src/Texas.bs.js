@@ -13,10 +13,10 @@ var PrintPlayers$ReactTemplate = require("./components/PrintPlayers.bs.js");
 
 var component = ReasonReact.reducerComponent("Texas");
 
-function deal(state) {
+function deal(players) {
   var deck = Deck$ReactTemplate.makeDeck(/* () */0);
   var shuffledDeck = Deck$ReactTemplate.shuffle(deck);
-  return TexasGame$ReactTemplate.dealFlop(shuffledDeck, state[/* players */2]);
+  return TexasGame$ReactTemplate.dealFlop(shuffledDeck, players);
 }
 
 function make() {
@@ -62,7 +62,7 @@ function make() {
                     /* game */state[/* game */3]
                   ]]);
       } else {
-        var match = deal(state);
+        var match = deal(state[/* players */2]);
         return /* Update */Block.__(0, [/* record */[
                     /* deck */match[0],
                     /* prompt : true */1,

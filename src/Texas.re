@@ -20,10 +20,10 @@ type state = {
 
 let component = ReasonReact.reducerComponent("Texas");
 
-let deal = (state) => {
+let deal = (players) => {
   let deck = Deck.makeDeck();
   let shuffledDeck = Deck.shuffle(deck);
-  dealFlop(shuffledDeck, state.players)
+  dealFlop(shuffledDeck, players)
 };
 
 let make = (_children) => {
@@ -37,7 +37,7 @@ let make = (_children) => {
   reducer: (action, state) =>
     switch action {
     | Deal =>
-      let (deck, players) = deal(state);
+      let (deck, players) = deal(state.players);
       let prompt = true;
       ReasonReact.Update({...state, deck, players, prompt})
     | Prompt =>
