@@ -4,11 +4,14 @@ open Deck;
 
 open Board;
 
-type prompt = bool;
+type dealer = player;
 
 type action =
   | Deal
-  | Prompt;
+  | Check
+  | Bet
+  | Prompt
+  | Fold;
 
 type game =
   | PreFlop
@@ -17,6 +20,7 @@ type game =
   | End;
 
 let rec dealToPlayers = (board, playersToBeDelt, numCards) =>
+  /* only works with fresh players */
   switch playersToBeDelt {
   | [] => board
   | [hd, ...tl] =>
@@ -27,6 +31,13 @@ let rec dealToPlayers = (board, playersToBeDelt, numCards) =>
     let newBoard = (newDeck, newPlayers);
     dealToPlayers(newBoard, tl, numCards)
   };
+
+let dealToDealer = (deck, dealer, numCards) => {
+  /*need to generalize dealToPlayers to have method for dealer or players */
+  let (deltCards, newDeck) = Deck.getCards([], deck, numCards);
+  let dealerWithNewCard = {...dealer, hand: deltCards};
+  (newDeck, dealerWithNewCard)
+};
 
 let dealFlop = (deck, players) => {
   let board = (deck, []);

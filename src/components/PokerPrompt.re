@@ -7,7 +7,9 @@ let make = (~game, ~onPrompt, _children) => {
   render: (self) =>
     game == PreFlop ?
       <a onClick=((_event) => onPrompt(Deal: action))> (ReasonReact.stringToElement("Deal")) </a> :
-      <a onClick=((_event) => onPrompt(Prompt: action))>
-        (ReasonReact.stringToElement("Prompt"))
-      </a>
+      <div>
+        <a onClick=((_event) => onPrompt(Check))> (ReasonReact.stringToElement("Check ")) </a>
+        <a onClick=((_event) => onPrompt(Bet))> (ReasonReact.stringToElement(" Bet ")) </a>
+        <a onClick=((_event) => onPrompt(Fold))> (ReasonReact.stringToElement(" Fold")) </a>
+      </div>
 };

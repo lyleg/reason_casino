@@ -14,7 +14,8 @@ open Board;
 type state = {
   deck,
   players,
-  game
+  game,
+  dealer
 };
 
 let component = ReasonReact.reducerComponent("Texas");
@@ -24,22 +25,28 @@ let make = (_children) => {
   initialState: () => {
     deck: [],
     game: PreFlop,
-    players: [{id: 1, hand: [], name: "John"}, {id: 2, hand: [], name: "Lyle"}]
+    players: [{id: 1, hand: [], name: "John"}, {id: 2, hand: [], name: "Lyle"}],
+    dealer: {id: 1, hand: [], name: "Dealer"}
   },
   reducer: (action, state) =>
     switch action {
+    | Bet => ReasonReact.NoUpdate
+    | Check => ReasonReact.NoUpdate
+    | Fold => ReasonReact.NoUpdate
     | Deal =>
       let (deck, players) = deal(state.players);
-      let game = Middle;
+      let game = Flop;
       ReasonReact.Update({...state, deck, players, game})
     | Prompt =>
       let game = Middle;
-      ReasonReact.Update({...state, game})
+      let board = (state.deck, state.players);
+      let (deck, dealer) = dealToDealer(state.deck, state.dealer, 3);
+      ReasonReact.Update({...state, game, dealer})
     },
   render: (self) =>
     <div>
       <div>
-        <PrintPlayers players=self.state.players />
+        <PrintPlayers players=self.state.players dealer=self.state.dealer />
         <PokerPrompt game=self.state.game onPrompt=((action: action) => self.send(action)) />
         <PokerStats game=self.state.game players=self.state.players />
       </div>

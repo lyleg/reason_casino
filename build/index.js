@@ -30705,7 +30705,7 @@ var component = ReasonReact.reducerComponent("Texas");
 function make() {
   var newrecord = component.slice();
   newrecord[/* render */9] = (function (self) {
-      return React.createElement("div", undefined, React.createElement("div", undefined, ReasonReact.element(/* None */0, /* None */0, PrintPlayers$ReactTemplate.make(self[/* state */2][/* players */1], /* array */[])), ReasonReact.element(/* None */0, /* None */0, PokerPrompt$ReactTemplate.make(self[/* state */2][/* game */2], (function (action) {
+      return React.createElement("div", undefined, React.createElement("div", undefined, ReasonReact.element(/* None */0, /* None */0, PrintPlayers$ReactTemplate.make(self[/* state */2][/* players */1], self[/* state */2][/* dealer */3], /* array */[])), ReasonReact.element(/* None */0, /* None */0, PokerPrompt$ReactTemplate.make(self[/* state */2][/* game */2], (function (action) {
                                 return Curry._1(self[/* send */4], action);
                               }), /* array */[])), ReasonReact.element(/* None */0, /* None */0, PokerStats$ReactTemplate.make(self[/* state */2][/* game */2], self[/* state */2][/* players */1], /* array */[]))));
     });
@@ -30727,22 +30727,30 @@ function make() {
                   /* [] */0
                 ]
               ],
-              /* game : PreFlop */0
+              /* game : PreFlop */0,
+              /* dealer : record */[
+                /* id */1,
+                /* hand : [] */0,
+                /* name */"Dealer"
+              ]
             ];
     });
   newrecord[/* reducer */12] = (function (action, state) {
       if (action !== 0) {
+        var match = TexasGame$ReactTemplate.dealToDealer(state[/* deck */0], state[/* dealer */3], 3);
         return /* Update */Block.__(0, [/* record */[
                     /* deck */state[/* deck */0],
                     /* players */state[/* players */1],
-                    /* game : Middle */2
+                    /* game : Middle */2,
+                    /* dealer */match[1]
                   ]]);
       } else {
-        var match = TexasGame$ReactTemplate.deal(state[/* players */1]);
+        var match$1 = TexasGame$ReactTemplate.deal(state[/* players */1]);
         return /* Update */Block.__(0, [/* record */[
-                    /* deck */match[0],
-                    /* players */match[1],
-                    /* game : Middle */2
+                    /* deck */match$1[0],
+                    /* players */match$1[1],
+                    /* game : Flop */1,
+                    /* dealer */state[/* dealer */3]
                   ]]);
       }
     });
@@ -32137,11 +32145,19 @@ function make(game, onPrompt, _) {
                       })
                   }, "Deal");
       } else {
-        return React.createElement("a", {
-                    onClick: (function () {
-                        return Curry._1(onPrompt, /* Prompt */1);
-                      })
-                  }, "Prompt");
+        return React.createElement("div", undefined, React.createElement("a", {
+                        onClick: (function () {
+                            return Curry._1(onPrompt, /* Prompt */1);
+                          })
+                      }, "Check "), React.createElement("a", {
+                        onClick: (function () {
+                            return Curry._1(onPrompt, /* Prompt */1);
+                          })
+                      }, " Bet "), React.createElement("a", {
+                        onClick: (function () {
+                            return Curry._1(onPrompt, /* Prompt */1);
+                          })
+                      }, " Fold"));
       }
     });
   return newrecord;
@@ -32165,12 +32181,11 @@ var $$Array            = __webpack_require__(43);
 var React              = __webpack_require__(17);
 var Pervasives         = __webpack_require__(22);
 var ReasonReact        = __webpack_require__(20);
-var Card$ReactTemplate = __webpack_require__(44);
 var Hand$ReactTemplate = __webpack_require__(221);
 
 var component = ReasonReact.statelessComponent("PrintPlayers");
 
-function make(players, _) {
+function make(players, dealer, _) {
   var newrecord = component.slice();
   newrecord[/* render */9] = (function () {
       return React.createElement("div", {
@@ -32179,17 +32194,13 @@ function make(players, _) {
                     fontSize: "22px"
                   }
                 }, React.createElement("h1", undefined, "Players"), $$Array.of_list(List.mapi((function (idx, player) {
-                            List.map((function (card) {
-                                    console.log(Card$ReactTemplate.printCard(card));
-                                    return /* () */0;
-                                  }), player[/* hand */1]);
                             return React.createElement("div", {
                                         key: Pervasives.string_of_int(idx),
                                         style: {
                                           marginBottom: "20px"
                                         }
                                       }, player[/* name */2], " (" + (Pervasives.string_of_int(player[/* id */0]) + ")"), ReasonReact.element(/* None */0, /* None */0, Hand$ReactTemplate.make(player[/* hand */1], /* array */[])));
-                          }), players)));
+                          }), players)), React.createElement("h1", undefined, "Dealer"), ReasonReact.element(/* None */0, /* None */0, Hand$ReactTemplate.make(dealer[/* hand */1], /* array */[])));
     });
   return newrecord;
 }
@@ -32308,6 +32319,22 @@ function dealToPlayers(_board, _playersToBeDelt, numCards) {
   };
 }
 
+function dealToDealer(deck, dealer, numCards) {
+  var match = Deck$ReactTemplate.getCards(/* [] */0, deck, numCards);
+  var dealerWithNewCard_000 = /* id */dealer[/* id */0];
+  var dealerWithNewCard_001 = /* hand */match[0];
+  var dealerWithNewCard_002 = /* name */dealer[/* name */2];
+  var dealerWithNewCard = /* record */[
+    dealerWithNewCard_000,
+    dealerWithNewCard_001,
+    dealerWithNewCard_002
+  ];
+  return /* tuple */[
+          match[1],
+          dealerWithNewCard
+        ];
+}
+
 function dealFlop(deck, players) {
   var board = /* tuple */[
     deck,
@@ -32333,6 +32360,7 @@ function printPlayers(players) {
 }
 
 exports.dealToPlayers = dealToPlayers;
+exports.dealToDealer  = dealToDealer;
 exports.dealFlop      = dealFlop;
 exports.deal          = deal;
 exports.printPlayers  = printPlayers;

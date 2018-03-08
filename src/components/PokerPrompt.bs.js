@@ -18,11 +18,19 @@ function make(game, onPrompt, _) {
                       })
                   }, "Deal");
       } else {
-        return React.createElement("a", {
-                    onClick: (function () {
-                        return Curry._1(onPrompt, /* Prompt */1);
-                      })
-                  }, "Prompt");
+        return React.createElement("div", undefined, React.createElement("a", {
+                        onClick: (function () {
+                            return Curry._1(onPrompt, /* Check */1);
+                          })
+                      }, "Check "), React.createElement("a", {
+                        onClick: (function () {
+                            return Curry._1(onPrompt, /* Bet */2);
+                          })
+                      }, " Bet "), React.createElement("a", {
+                        onClick: (function () {
+                            return Curry._1(onPrompt, /* Fold */4);
+                          })
+                      }, " Fold"));
       }
     });
   return newrecord;

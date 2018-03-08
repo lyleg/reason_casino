@@ -2,7 +2,7 @@ open Board;
 
 let component = ReasonReact.statelessComponent("PrintPlayers");
 
-let make = (~players, _children) => {
+let make = (~players, ~dealer, _children) => {
   ...component, /* spread the template's other defaults into here  */
   render: (self) =>
     <div style=(ReactDOMRe.Style.make(~color="#444444", ~fontSize="22px", ()))>
@@ -11,19 +11,19 @@ let make = (~players, _children) => {
         ReasonReact.arrayToElement(
           Array.of_list(
             List.mapi(
-              (idx, player) => {
-                List.map((card) => Js.log(Card.printCard(card)), player.hand);
+              (idx, player) =>
                 <div
                   key=(string_of_int(idx)) style=(ReactDOMRe.Style.make(~marginBottom="20px", ()))>
                   (ReasonReact.stringToElement(player.name))
                   (ReasonReact.stringToElement(" (" ++ string_of_int(player.id) ++ ")"))
                   <Hand hand=player.hand />
-                </div>
-              },
+                </div>,
               players
             )
           )
         )
       )
+      <h1> (ReasonReact.stringToElement("Dealer")) </h1>
+      <Hand hand=dealer.hand />
     </div>
 };

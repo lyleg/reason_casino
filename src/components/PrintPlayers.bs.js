@@ -6,12 +6,11 @@ var $$Array            = require("bs-platform/lib/js/array.js");
 var React              = require("react");
 var Pervasives         = require("bs-platform/lib/js/pervasives.js");
 var ReasonReact        = require("reason-react/src/ReasonReact.js");
-var Card$ReactTemplate = require("../Card.bs.js");
 var Hand$ReactTemplate = require("./Hand.bs.js");
 
 var component = ReasonReact.statelessComponent("PrintPlayers");
 
-function make(players, _) {
+function make(players, dealer, _) {
   var newrecord = component.slice();
   newrecord[/* render */9] = (function () {
       return React.createElement("div", {
@@ -20,17 +19,13 @@ function make(players, _) {
                     fontSize: "22px"
                   }
                 }, React.createElement("h1", undefined, "Players"), $$Array.of_list(List.mapi((function (idx, player) {
-                            List.map((function (card) {
-                                    console.log(Card$ReactTemplate.printCard(card));
-                                    return /* () */0;
-                                  }), player[/* hand */1]);
                             return React.createElement("div", {
                                         key: Pervasives.string_of_int(idx),
                                         style: {
                                           marginBottom: "20px"
                                         }
                                       }, player[/* name */2], " (" + (Pervasives.string_of_int(player[/* id */0]) + ")"), ReasonReact.element(/* None */0, /* None */0, Hand$ReactTemplate.make(player[/* hand */1], /* array */[])));
-                          }), players)));
+                          }), players)), React.createElement("h1", undefined, "Dealer"), ReasonReact.element(/* None */0, /* None */0, Hand$ReactTemplate.make(dealer[/* hand */1], /* array */[])));
     });
   return newrecord;
 }

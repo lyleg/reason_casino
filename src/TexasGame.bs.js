@@ -40,6 +40,22 @@ function dealToPlayers(_board, _playersToBeDelt, numCards) {
   };
 }
 
+function dealToDealer(deck, dealer, numCards) {
+  var match = Deck$ReactTemplate.getCards(/* [] */0, deck, numCards);
+  var dealerWithNewCard_000 = /* id */dealer[/* id */0];
+  var dealerWithNewCard_001 = /* hand */match[0];
+  var dealerWithNewCard_002 = /* name */dealer[/* name */2];
+  var dealerWithNewCard = /* record */[
+    dealerWithNewCard_000,
+    dealerWithNewCard_001,
+    dealerWithNewCard_002
+  ];
+  return /* tuple */[
+          match[1],
+          dealerWithNewCard
+        ];
+}
+
 function dealFlop(deck, players) {
   var board = /* tuple */[
     deck,
@@ -65,6 +81,7 @@ function printPlayers(players) {
 }
 
 exports.dealToPlayers = dealToPlayers;
+exports.dealToDealer  = dealToDealer;
 exports.dealFlop      = dealFlop;
 exports.deal          = deal;
 exports.printPlayers  = printPlayers;
