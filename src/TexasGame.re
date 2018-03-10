@@ -6,18 +6,24 @@ open Board;
 
 type dealer = player;
 
+type prompt =
+  | Check
+  | Fold
+  | Bet;
+
 type action =
   | Deal
-  | Check
-  | Bet
-  | Prompt
-  | Fold;
+  | Flop(prompt)
+  | Middle(prompt)
+  | River(prompt);
 
-type game =
+type round =
   | PreFlop
   | Flop
   | Middle
   | End;
+
+type pool = int;
 
 let rec dealToPlayers = (board, playersToBeDelt, numCards) =>
   /* only works with fresh players */

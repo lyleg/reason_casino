@@ -1,6 +1,13 @@
 let component = ReasonReact.statelessComponent("PokerStats");
 
-let make = (~game, ~players, _children) => {
+let make = (~round, ~players, ~pool, _children) => {
   ...component,
-  render: (self) => <div> (ReasonReact.stringToElement("Statz")) </div>
+  render: (self) =>
+    <div>
+      <h2> (ReasonReact.stringToElement("Statz")) </h2>
+      <div>
+        <h3> (ReasonReact.stringToElement("Pool: ")) </h3>
+        <div> (ReasonReact.stringToElement(string_of_int(pool))) </div>
+      </div>
+    </div>
 };

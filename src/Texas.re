@@ -14,8 +14,9 @@ open Board;
 type state = {
   deck,
   players,
-  game,
-  dealer
+  round,
+  dealer,
+  pool
 };
 
 let component = ReasonReact.reducerComponent("Texas");
@@ -24,31 +25,37 @@ let make = (_children) => {
   ...component,
   initialState: () => {
     deck: [],
-    game: PreFlop,
+    pool: 0,
+    round: PreFlop,
     players: [{id: 1, hand: [], name: "John"}, {id: 2, hand: [], name: "Lyle"}],
     dealer: {id: 1, hand: [], name: "Dealer"}
   },
   reducer: (action, state) =>
     switch action {
-    | Bet => ReasonReact.NoUpdate
-    | Check => ReasonReact.NoUpdate
-    | Fold => ReasonReact.NoUpdate
+    | Flop(prompt) =>
+      let round = Middle;
+      let wager =
+        switch prompt {
+        | Bet => 100
+        | _ => 0
+        };
+      let pool = state.pool + wager;
+      ReasonReact.Update({...state, round, pool})
+    | Middle(prompt) =>
+      let round = Middle;
+      ReasonReact.Update({...state, round})
+    | River(prompt) =>
+      let round = Middle;
+      ReasonReact.Update({...state, round})
     | Deal =>
       let (deck, players) = deal(state.players);
-      let game = Flop;
-      ReasonReact.Update({...state, deck, players, game})
-    | Prompt =>
-      let game = Middle;
-      let board = (state.deck, state.players);
-      let (deck, dealer) = dealToDealer(state.deck, state.dealer, 3);
-      ReasonReact.Update({...state, game, dealer})
+      let round = Flop;
+      ReasonReact.Update({...state, deck, players, round})
     },
   render: (self) =>
     <div>
-      <div>
-        <PrintPlayers players=self.state.players dealer=self.state.dealer />
-        <PokerPrompt game=self.state.game onPrompt=((action: action) => self.send(action)) />
-        <PokerStats game=self.state.game players=self.state.players />
-      </div>
+      <PrintPlayers players=self.state.players dealer=self.state.dealer />
+      <PokerPrompt round=self.state.round onPrompt=((action: action) => self.send(action)) />
+      <PokerStats round=self.state.round players=self.state.players pool=self.state.pool />
     </div>
 };

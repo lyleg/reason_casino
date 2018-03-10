@@ -2,14 +2,15 @@
 'use strict';
 
 var React       = require("react");
+var Pervasives  = require("bs-platform/lib/js/pervasives.js");
 var ReasonReact = require("reason-react/src/ReasonReact.js");
 
 var component = ReasonReact.statelessComponent("PokerStats");
 
-function make(_, _$1, _$2) {
+function make(_, _$1, pool, _$2) {
   var newrecord = component.slice();
   newrecord[/* render */9] = (function () {
-      return React.createElement("div", undefined, "Statz");
+      return React.createElement("div", undefined, React.createElement("h2", undefined, "Statz"), React.createElement("div", undefined, React.createElement("h3", undefined, "Pool: "), React.createElement("div", undefined, Pervasives.string_of_int(pool))));
     });
   return newrecord;
 }

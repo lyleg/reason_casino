@@ -15,9 +15,9 @@ var component = ReasonReact.reducerComponent("Texas");
 function make() {
   var newrecord = component.slice();
   newrecord[/* render */9] = (function (self) {
-      return React.createElement("div", undefined, React.createElement("div", undefined, ReasonReact.element(/* None */0, /* None */0, PrintPlayers$ReactTemplate.make(self[/* state */2][/* players */1], self[/* state */2][/* dealer */3], /* array */[])), ReasonReact.element(/* None */0, /* None */0, PokerPrompt$ReactTemplate.make(self[/* state */2][/* game */2], (function (action) {
-                                return Curry._1(self[/* send */4], action);
-                              }), /* array */[])), ReasonReact.element(/* None */0, /* None */0, PokerStats$ReactTemplate.make(self[/* state */2][/* game */2], self[/* state */2][/* players */1], /* array */[]))));
+      return React.createElement("div", undefined, ReasonReact.element(/* None */0, /* None */0, PrintPlayers$ReactTemplate.make(self[/* state */2][/* players */1], self[/* state */2][/* dealer */3], /* array */[])), ReasonReact.element(/* None */0, /* None */0, PokerPrompt$ReactTemplate.make(self[/* state */2][/* round */2], (function (action) {
+                            return Curry._1(self[/* send */4], action);
+                          }), /* array */[])), ReasonReact.element(/* None */0, /* None */0, PokerStats$ReactTemplate.make(self[/* state */2][/* round */2], self[/* state */2][/* players */1], self[/* state */2][/* pool */4], /* array */[])));
     });
   newrecord[/* initialState */10] = (function () {
       return /* record */[
@@ -37,36 +37,55 @@ function make() {
                   /* [] */0
                 ]
               ],
-              /* game : PreFlop */0,
+              /* round : PreFlop */0,
               /* dealer : record */[
                 /* id */1,
                 /* hand : [] */0,
                 /* name */"Dealer"
-              ]
+              ],
+              /* pool */0
             ];
     });
   newrecord[/* reducer */12] = (function (action, state) {
-      if (action !== 3) {
-        if (action !== 0) {
-          return /* NoUpdate */0;
-        } else {
-          var match = TexasGame$ReactTemplate.deal(state[/* players */1]);
-          return /* Update */Block.__(0, [/* record */[
-                      /* deck */match[0],
-                      /* players */match[1],
-                      /* game : Flop */1,
-                      /* dealer */state[/* dealer */3]
-                    ]]);
-        }
+      var exit = 0;
+      if (typeof action === "number") {
+        var match = TexasGame$ReactTemplate.deal(state[/* players */1]);
+        return /* Update */Block.__(0, [/* record */[
+                    /* deck */match[0],
+                    /* players */match[1],
+                    /* round : Flop */1,
+                    /* dealer */state[/* dealer */3],
+                    /* pool */state[/* pool */4]
+                  ]]);
       } else {
-        var match$1 = TexasGame$ReactTemplate.dealToDealer(state[/* deck */0], state[/* dealer */3], 3);
+        switch (action.tag | 0) {
+          case 0 : 
+              var wager = action[0] >= 2 ? 100 : 0;
+              var pool = state[/* pool */4] + wager | 0;
+              return /* Update */Block.__(0, [/* record */[
+                          /* deck */state[/* deck */0],
+                          /* players */state[/* players */1],
+                          /* round : Middle */2,
+                          /* dealer */state[/* dealer */3],
+                          /* pool */pool
+                        ]]);
+          case 1 : 
+          case 2 : 
+              exit = 1;
+              break;
+          
+        }
+      }
+      if (exit === 1) {
         return /* Update */Block.__(0, [/* record */[
                     /* deck */state[/* deck */0],
                     /* players */state[/* players */1],
-                    /* game : Middle */2,
-                    /* dealer */match$1[1]
+                    /* round : Middle */2,
+                    /* dealer */state[/* dealer */3],
+                    /* pool */state[/* pool */4]
                   ]]);
       }
+      
     });
   return newrecord;
 }
