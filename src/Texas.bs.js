@@ -26,12 +26,14 @@ function make() {
                 /* record */[
                   /* id */1,
                   /* hand : [] */0,
+                  /* money */1000,
                   /* name */"John"
                 ],
                 /* :: */[
                   /* record */[
                     /* id */2,
                     /* hand : [] */0,
+                    /* money */1000,
                     /* name */"Lyle"
                   ],
                   /* [] */0
@@ -41,6 +43,7 @@ function make() {
               /* dealer : record */[
                 /* id */1,
                 /* hand : [] */0,
+                /* money */0,
                 /* name */"Dealer"
               ],
               /* pool */0

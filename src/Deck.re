@@ -3,9 +3,7 @@ open Card;
 type deck = list(card);
 
 let getRandomCard = (deck) => {
-  let len = List.length(deck);
-  let index = Random.int(len);
-  let drawnCard = List.nth(deck, index);
+  let drawnCard = List.length(deck) |> Random.int |> List.nth(deck);
   let newDeck = List.filter((card) => card != drawnCard, deck);
   (drawnCard, newDeck)
 };

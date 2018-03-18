@@ -7,9 +7,7 @@ var Caml_obj           = require("bs-platform/lib/js/caml_obj.js");
 var Card$ReactTemplate = require("./Card.bs.js");
 
 function getRandomCard(deck) {
-  var len = List.length(deck);
-  var index = Random.$$int(len);
-  var drawnCard = List.nth(deck, index);
+  var drawnCard = List.nth(deck, Random.$$int(List.length(deck)));
   var newDeck = List.filter((function (card) {
             return Caml_obj.caml_notequal(card, drawnCard);
           }))(deck);

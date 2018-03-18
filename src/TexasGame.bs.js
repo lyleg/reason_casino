@@ -15,11 +15,15 @@ function dealToPlayers(_board, _playersToBeDelt, numCards) {
       var match = Deck$ReactTemplate.getCards(/* [] */0, board[0], numCards);
       var playerWithNewCard_000 = /* id */hd[/* id */0];
       var playerWithNewCard_001 = /* hand */match[0];
-      var playerWithNewCard_002 = /* name */hd[/* name */2];
+      var playerWithNewCard_002 = /* money */hd[/* money */2];
+      var playerWithNewCard_003 = /* name */hd[/* name */3];
+      var playerWithNewCard_004 = /* src */hd[/* src */4];
       var playerWithNewCard = /* record */[
         playerWithNewCard_000,
         playerWithNewCard_001,
-        playerWithNewCard_002
+        playerWithNewCard_002,
+        playerWithNewCard_003,
+        playerWithNewCard_004
       ];
       var newPlayers = List.append(board[1], /* :: */[
             playerWithNewCard,
@@ -44,11 +48,15 @@ function dealToDealer(deck, dealer, numCards) {
   var match = Deck$ReactTemplate.getCards(/* [] */0, deck, numCards);
   var dealerWithNewCard_000 = /* id */dealer[/* id */0];
   var dealerWithNewCard_001 = /* hand */match[0];
-  var dealerWithNewCard_002 = /* name */dealer[/* name */2];
+  var dealerWithNewCard_002 = /* money */dealer[/* money */2];
+  var dealerWithNewCard_003 = /* name */dealer[/* name */3];
+  var dealerWithNewCard_004 = /* src */dealer[/* src */4];
   var dealerWithNewCard = /* record */[
     dealerWithNewCard_000,
     dealerWithNewCard_001,
-    dealerWithNewCard_002
+    dealerWithNewCard_002,
+    dealerWithNewCard_003,
+    dealerWithNewCard_004
   ];
   return /* tuple */[
           match[1],

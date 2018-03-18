@@ -11,6 +11,8 @@ open Deck;
 
 open Board;
 
+open Player;
+
 type state = {
   deck,
   players,
@@ -27,20 +29,21 @@ let make = (_children) => {
     deck: [],
     pool: 0,
     round: PreFlop,
-    players: [{id: 1, hand: [], name: "John"}, {id: 2, hand: [], name: "Lyle"}],
-    dealer: {id: 1, hand: [], name: "Dealer"}
+    players: [
+      {id: 1, hand: [], name: "John", money: 1000, src: Computer},
+      {id: 2, hand: [], name: "Lyle", money: 1000, src: Human}
+    ],
+    dealer: {id: 1, hand: [], name: "Dealer", money: 0, src: Computer}
   },
   reducer: (action, state) =>
     switch action {
     | Flop(prompt) =>
       let round = Middle;
-      let wager =
-        switch prompt {
-        | Bet => 100
-        | _ => 0
-        };
-      let pool = state.pool + wager;
-      ReasonReact.Update({...state, round, pool})
+      let player1Prompt = (1, prompt);
+      let player2Prompt = (2, prompt);
+      let prompts = [player1Prompt, player2Prompt];
+      let (players, dealer) = processPlayers([], state.players, state.dealer, prompts);
+      ReasonReact.Update({...state, round})
     | Middle(prompt) =>
       let round = Middle;
       ReasonReact.Update({...state, round})

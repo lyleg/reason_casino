@@ -11,6 +11,13 @@ type prompt =
   | Fold
   | Bet;
 
+type playerPrompt = {
+  id: int,
+  prompt
+};
+
+type prompts = list(playerPrompt);
+
 type action =
   | Deal
   | Flop(prompt)
@@ -22,8 +29,6 @@ type round =
   | Flop
   | Middle
   | End;
-
-type pool = int;
 
 let rec dealToPlayers = (board, playersToBeDelt, numCards) =>
   /* only works with fresh players */
@@ -58,7 +63,7 @@ let deal = (players) => {
 
 let printPlayers = (players) =>
   List.map(
-    (player) => {
+    (player: player) => {
       Js.log("****** Player " ++ string_of_int(player.id) ++ " *******");
       List.map((card) => Js.log(Card.printCard(card)), player.hand)
     },

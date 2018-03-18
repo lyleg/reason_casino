@@ -30716,12 +30716,14 @@ function make() {
                 /* record */[
                   /* id */1,
                   /* hand : [] */0,
+                  /* money */1000,
                   /* name */"John"
                 ],
                 /* :: */[
                   /* record */[
                     /* id */2,
                     /* hand : [] */0,
+                    /* money */1000,
                     /* name */"Lyle"
                   ],
                   /* [] */0
@@ -30731,6 +30733,7 @@ function make() {
               /* dealer : record */[
                 /* id */1,
                 /* hand : [] */0,
+                /* money */0,
                 /* name */"Dealer"
               ],
               /* pool */0
@@ -30807,11 +30810,15 @@ function dealToPlayers(_board, _playersToBeDelt, numCards) {
       var match = Deck$ReactTemplate.getCards(/* [] */0, board[0], numCards);
       var playerWithNewCard_000 = /* id */hd[/* id */0];
       var playerWithNewCard_001 = /* hand */match[0];
-      var playerWithNewCard_002 = /* name */hd[/* name */2];
+      var playerWithNewCard_002 = /* money */hd[/* money */2];
+      var playerWithNewCard_003 = /* name */hd[/* name */3];
+      var playerWithNewCard_004 = /* src */hd[/* src */4];
       var playerWithNewCard = /* record */[
         playerWithNewCard_000,
         playerWithNewCard_001,
-        playerWithNewCard_002
+        playerWithNewCard_002,
+        playerWithNewCard_003,
+        playerWithNewCard_004
       ];
       var newPlayers = List.append(board[1], /* :: */[
             playerWithNewCard,
@@ -30836,11 +30843,15 @@ function dealToDealer(deck, dealer, numCards) {
   var match = Deck$ReactTemplate.getCards(/* [] */0, deck, numCards);
   var dealerWithNewCard_000 = /* id */dealer[/* id */0];
   var dealerWithNewCard_001 = /* hand */match[0];
-  var dealerWithNewCard_002 = /* name */dealer[/* name */2];
+  var dealerWithNewCard_002 = /* money */dealer[/* money */2];
+  var dealerWithNewCard_003 = /* name */dealer[/* name */3];
+  var dealerWithNewCard_004 = /* src */dealer[/* src */4];
   var dealerWithNewCard = /* record */[
     dealerWithNewCard_000,
     dealerWithNewCard_001,
-    dealerWithNewCard_002
+    dealerWithNewCard_002,
+    dealerWithNewCard_003,
+    dealerWithNewCard_004
   ];
   return /* tuple */[
           match[1],
@@ -32128,9 +32139,7 @@ var Caml_obj           = __webpack_require__(16);
 var Card$ReactTemplate = __webpack_require__(64);
 
 function getRandomCard(deck) {
-  var len = List.length(deck);
-  var index = Random.$$int(len);
-  var drawnCard = List.nth(deck, index);
+  var drawnCard = List.nth(deck, Random.$$int(List.length(deck)));
   var newDeck = List.filter((function (card) {
             return Caml_obj.caml_notequal(card, drawnCard);
           }))(deck);
@@ -32319,7 +32328,7 @@ function make(players, dealer, _) {
                                         style: {
                                           marginBottom: "20px"
                                         }
-                                      }, player[/* name */2], " (" + (Pervasives.string_of_int(player[/* id */0]) + ")"), ReasonReact.element(/* None */0, /* None */0, Hand$ReactTemplate.make(player[/* hand */1], /* array */[])));
+                                      }, player[/* name */3], " (" + (Pervasives.string_of_int(player[/* id */0]) + ")"), ReasonReact.element(/* None */0, /* None */0, Hand$ReactTemplate.make(player[/* hand */1], /* array */[])));
                           }), players)), React.createElement("h1", undefined, "Dealer"), ReasonReact.element(/* None */0, /* None */0, Hand$ReactTemplate.make(dealer[/* hand */1], /* array */[])));
     });
   return newrecord;
