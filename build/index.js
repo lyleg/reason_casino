@@ -30757,14 +30757,11 @@ function make() {
       } else {
         switch (action.tag | 0) {
           case 0 : 
-              var prompt = action[0];
-              var player1Prompt = /* record */[
-                /* id */1,
-                /* prompt */prompt
-              ];
+              var player1Prompt = Player$ReactTemplate.randomBot(1);
+              var player2Prompt_001 = /* prompt */action[0];
               var player2Prompt = /* record */[
                 /* id */2,
-                /* prompt */prompt
+                player2Prompt_001
               ];
               var prompts_001 = /* :: */[
                 player2Prompt,
@@ -32432,13 +32429,13 @@ exports.make      = make;
 var List   = __webpack_require__(21);
 var Random = __webpack_require__(100);
 
-function processComputerPlayerPrompt(_, _$1) {
-  var rand = Random.$$int(2);
-  if (rand > 2 || rand < 0) {
-    return /* Check */0;
-  } else {
-    return rand;
-  }
+function randomBot(id) {
+  var rand = Random.$$int(3);
+  var prompt = rand > 2 || rand < 0 ? /* Check */0 : rand;
+  return /* record */[
+          /* id */id,
+          /* prompt */prompt
+        ];
 }
 
 function processPlayer(player, dealer, prompts) {
@@ -32501,9 +32498,9 @@ function processPlayers(_processedPlayers, _players, _dealer, prompts) {
   };
 }
 
-exports.processComputerPlayerPrompt = processComputerPlayerPrompt;
-exports.processPlayer               = processPlayer;
-exports.processPlayers              = processPlayers;
+exports.randomBot      = randomBot;
+exports.processPlayer  = processPlayer;
+exports.processPlayers = processPlayers;
 /* No side effect */
 
 

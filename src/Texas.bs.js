@@ -67,14 +67,11 @@ function make() {
       } else {
         switch (action.tag | 0) {
           case 0 : 
-              var prompt = action[0];
-              var player1Prompt = /* record */[
-                /* id */1,
-                /* prompt */prompt
-              ];
+              var player1Prompt = Player$ReactTemplate.randomBot(1);
+              var player2Prompt_001 = /* prompt */action[0];
               var player2Prompt = /* record */[
                 /* id */2,
-                /* prompt */prompt
+                player2Prompt_001
               ];
               var prompts_001 = /* :: */[
                 player2Prompt,

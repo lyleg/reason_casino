@@ -4,13 +4,13 @@
 var List   = require("bs-platform/lib/js/list.js");
 var Random = require("bs-platform/lib/js/random.js");
 
-function processComputerPlayerPrompt(_, _$1) {
-  var rand = Random.$$int(2);
-  if (rand > 2 || rand < 0) {
-    return /* Check */0;
-  } else {
-    return rand;
-  }
+function randomBot(id) {
+  var rand = Random.$$int(3);
+  var prompt = rand > 2 || rand < 0 ? /* Check */0 : rand;
+  return /* record */[
+          /* id */id,
+          /* prompt */prompt
+        ];
 }
 
 function processPlayer(player, dealer, prompts) {
@@ -73,7 +73,7 @@ function processPlayers(_processedPlayers, _players, _dealer, prompts) {
   };
 }
 
-exports.processComputerPlayerPrompt = processComputerPlayerPrompt;
-exports.processPlayer               = processPlayer;
-exports.processPlayers              = processPlayers;
+exports.randomBot      = randomBot;
+exports.processPlayer  = processPlayer;
+exports.processPlayers = processPlayers;
 /* No side effect */
