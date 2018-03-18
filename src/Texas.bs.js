@@ -84,12 +84,12 @@ function make() {
                 player1Prompt,
                 prompts_001
               ];
-              Player$ReactTemplate.processPlayers(/* [] */0, state[/* players */1], state[/* dealer */3], prompts);
+              var match$1 = Player$ReactTemplate.processPlayers(/* [] */0, state[/* players */1], state[/* dealer */3], prompts);
               return /* Update */Block.__(0, [/* record */[
                           /* deck */state[/* deck */0],
-                          /* players */state[/* players */1],
+                          /* players */match$1[0],
                           /* round : Middle */2,
-                          /* dealer */state[/* dealer */3],
+                          /* dealer */match$1[1],
                           /* pool */state[/* pool */4]
                         ]]);
           case 1 : 

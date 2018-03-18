@@ -25,6 +25,7 @@ let make = (~players, ~dealer, _children) => {
         )
       )
       <h1> (ReasonReact.stringToElement("Dealer")) </h1>
+      (ReasonReact.stringToElement(" (" ++ string_of_int(dealer.money) ++ ")"))
       <Hand hand=dealer.hand />
     </div>
 };

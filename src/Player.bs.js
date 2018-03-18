@@ -66,7 +66,7 @@ function processPlayers(_processedPlayers, _players, _dealer, prompts) {
       
     } else {
       return /* tuple */[
-              players,
+              processedPlayers,
               dealer
             ];
     }

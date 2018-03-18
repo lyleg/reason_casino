@@ -28,7 +28,7 @@ let processPlayer = (player: player, dealer: player, prompts: prompts) => {
 let rec processPlayers =
         (processedPlayers: players, players: players, dealer: player, prompts: prompts) =>
   switch players {
-  | [] => (players, dealer)
+  | [] => (processedPlayers, dealer)
   | [hd, ...tl] =>
     let (player, newDealer) = processPlayer(hd, dealer, prompts);
     processPlayers(List.append(processedPlayers, [player]), tl, newDealer, prompts)

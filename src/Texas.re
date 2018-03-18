@@ -42,8 +42,8 @@ let make = (_children) => {
       let player1Prompt = {id: 1, prompt};
       let player2Prompt = {id: 2, prompt};
       let prompts = [player1Prompt, player2Prompt];
-      let (_players, dealer) = processPlayers([], state.players, state.dealer, prompts);
-      ReasonReact.Update({...state, round})
+      let (players, dealer) = processPlayers([], state.players, state.dealer, prompts);
+      ReasonReact.Update({...state, round, players, dealer})
     | Middle(prompt) =>
       let round = Middle;
       ReasonReact.Update({...state, round})
