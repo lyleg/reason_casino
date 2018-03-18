@@ -39,10 +39,10 @@ let make = (_children) => {
     switch action {
     | Flop(prompt) =>
       let round = Middle;
-      let player1Prompt = (1, prompt);
-      let player2Prompt = (2, prompt);
+      let player1Prompt = {id: 1, prompt};
+      let player2Prompt = {id: 2, prompt};
       let prompts = [player1Prompt, player2Prompt];
-      let (players, dealer) = processPlayers([], state.players, state.dealer, prompts);
+      let (_players, dealer) = processPlayers([], state.players, state.dealer, prompts);
       ReasonReact.Update({...state, round})
     | Middle(prompt) =>
       let round = Middle;

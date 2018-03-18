@@ -24,7 +24,7 @@ function make(players, dealer, _) {
                                         style: {
                                           marginBottom: "20px"
                                         }
-                                      }, player[/* name */3], " (" + (Pervasives.string_of_int(player[/* id */0]) + ")"), ReasonReact.element(/* None */0, /* None */0, Hand$ReactTemplate.make(player[/* hand */1], /* array */[])));
+                                      }, player[/* name */3], " (" + (Pervasives.string_of_int(player[/* id */0]) + ")"), " (" + (Pervasives.string_of_int(player[/* money */2]) + ")"), ReasonReact.element(/* None */0, /* None */0, Hand$ReactTemplate.make(player[/* hand */1], /* array */[])));
                           }), players)), React.createElement("h1", undefined, "Dealer"), ReasonReact.element(/* None */0, /* None */0, Hand$ReactTemplate.make(dealer[/* hand */1], /* array */[])));
     });
   return newrecord;

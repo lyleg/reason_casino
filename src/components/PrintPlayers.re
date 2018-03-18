@@ -16,6 +16,7 @@ let make = (~players, ~dealer, _children) => {
                   key=(string_of_int(idx)) style=(ReactDOMRe.Style.make(~marginBottom="20px", ()))>
                   (ReasonReact.stringToElement(player.name))
                   (ReasonReact.stringToElement(" (" ++ string_of_int(player.id) ++ ")"))
+                  (ReasonReact.stringToElement(" (" ++ string_of_int(player.money) ++ ")"))
                   <Hand hand=player.hand />
                 </div>,
               players

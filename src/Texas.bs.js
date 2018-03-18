@@ -5,6 +5,7 @@ var Block                      = require("bs-platform/lib/js/block.js");
 var Curry                      = require("bs-platform/lib/js/curry.js");
 var React                      = require("react");
 var ReasonReact                = require("reason-react/src/ReasonReact.js");
+var Player$ReactTemplate       = require("./Player.bs.js");
 var TexasGame$ReactTemplate    = require("./TexasGame.bs.js");
 var PokerStats$ReactTemplate   = require("./components/PokerStats.bs.js");
 var PokerPrompt$ReactTemplate  = require("./components/PokerPrompt.bs.js");
@@ -27,14 +28,16 @@ function make() {
                   /* id */1,
                   /* hand : [] */0,
                   /* money */1000,
-                  /* name */"John"
+                  /* name */"John",
+                  /* src : Computer */1
                 ],
                 /* :: */[
                   /* record */[
                     /* id */2,
                     /* hand : [] */0,
                     /* money */1000,
-                    /* name */"Lyle"
+                    /* name */"Lyle",
+                    /* src : Human */0
                   ],
                   /* [] */0
                 ]
@@ -44,7 +47,8 @@ function make() {
                 /* id */1,
                 /* hand : [] */0,
                 /* money */0,
-                /* name */"Dealer"
+                /* name */"Dealer",
+                /* src : Computer */1
               ],
               /* pool */0
             ];
@@ -63,14 +67,30 @@ function make() {
       } else {
         switch (action.tag | 0) {
           case 0 : 
-              var wager = action[0] >= 2 ? 100 : 0;
-              var pool = state[/* pool */4] + wager | 0;
+              var prompt = action[0];
+              var player1Prompt = /* record */[
+                /* id */1,
+                /* prompt */prompt
+              ];
+              var player2Prompt = /* record */[
+                /* id */2,
+                /* prompt */prompt
+              ];
+              var prompts_001 = /* :: */[
+                player2Prompt,
+                /* [] */0
+              ];
+              var prompts = /* :: */[
+                player1Prompt,
+                prompts_001
+              ];
+              Player$ReactTemplate.processPlayers(/* [] */0, state[/* players */1], state[/* dealer */3], prompts);
               return /* Update */Block.__(0, [/* record */[
                           /* deck */state[/* deck */0],
                           /* players */state[/* players */1],
                           /* round : Middle */2,
                           /* dealer */state[/* dealer */3],
-                          /* pool */pool
+                          /* pool */state[/* pool */4]
                         ]]);
           case 1 : 
           case 2 : 
