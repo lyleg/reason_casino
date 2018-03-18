@@ -82,6 +82,7 @@ function make() {
                 prompts_001
               ];
               var match$1 = Player$ReactTemplate.processPlayers(/* [] */0, state[/* players */1], state[/* dealer */3], prompts);
+              TexasGame$ReactTemplate.deal(state[/* players */1]);
               return /* Update */Block.__(0, [/* record */[
                           /* deck */state[/* deck */0],
                           /* players */match$1[0],

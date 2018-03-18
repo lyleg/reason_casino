@@ -30772,6 +30772,7 @@ function make() {
                 prompts_001
               ];
               var match$1 = Player$ReactTemplate.processPlayers(/* [] */0, state[/* players */1], state[/* dealer */3], prompts);
+              TexasGame$ReactTemplate.deal(state[/* players */1]);
               return /* Update */Block.__(0, [/* record */[
                           /* deck */state[/* deck */0],
                           /* players */match$1[0],
@@ -30876,18 +30877,14 @@ function dealToDealer(deck, dealer, numCards) {
         ];
 }
 
-function dealFlop(deck, players) {
-  var board = /* tuple */[
-    deck,
-    /* [] */0
-  ];
-  return dealToPlayers(board, players, 2);
-}
-
 function deal(players) {
   var deck = Deck$ReactTemplate.makeDeck(/* () */0);
   var shuffledDeck = Deck$ReactTemplate.shuffle(deck);
-  return dealFlop(shuffledDeck, players);
+  var board = /* tuple */[
+    shuffledDeck,
+    /* [] */0
+  ];
+  return dealToPlayers(board, players, 2);
 }
 
 function printPlayers(players) {
@@ -30902,7 +30899,6 @@ function printPlayers(players) {
 
 exports.dealToPlayers = dealToPlayers;
 exports.dealToDealer  = dealToDealer;
-exports.dealFlop      = dealFlop;
 exports.deal          = deal;
 exports.printPlayers  = printPlayers;
 /* Card-ReactTemplate Not a pure module */

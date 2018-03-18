@@ -26,7 +26,6 @@ let processPlayer = (player: player, dealer: player, prompts: prompts) => {
   (newPlayer, newDealer)
 };
 
-/* hardoding for 1 player, will only be 1 human prompt for each round */
 let rec processPlayers =
         (processedPlayers: players, players: players, dealer: player, prompts: prompts) =>
   switch players {

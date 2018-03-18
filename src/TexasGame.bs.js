@@ -64,18 +64,14 @@ function dealToDealer(deck, dealer, numCards) {
         ];
 }
 
-function dealFlop(deck, players) {
-  var board = /* tuple */[
-    deck,
-    /* [] */0
-  ];
-  return dealToPlayers(board, players, 2);
-}
-
 function deal(players) {
   var deck = Deck$ReactTemplate.makeDeck(/* () */0);
   var shuffledDeck = Deck$ReactTemplate.shuffle(deck);
-  return dealFlop(shuffledDeck, players);
+  var board = /* tuple */[
+    shuffledDeck,
+    /* [] */0
+  ];
+  return dealToPlayers(board, players, 2);
 }
 
 function printPlayers(players) {
@@ -90,7 +86,6 @@ function printPlayers(players) {
 
 exports.dealToPlayers = dealToPlayers;
 exports.dealToDealer  = dealToDealer;
-exports.dealFlop      = dealFlop;
 exports.deal          = deal;
 exports.printPlayers  = printPlayers;
 /* Card-ReactTemplate Not a pure module */

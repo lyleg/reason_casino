@@ -50,15 +50,11 @@ let dealToDealer = (deck, dealer, numCards) => {
   (newDeck, dealerWithNewCard)
 };
 
-let dealFlop = (deck, players) => {
-  let board = (deck, []);
-  dealToPlayers(board, players, 2)
-};
-
 let deal = (players) => {
   let deck = Deck.makeDeck();
   let shuffledDeck = Deck.shuffle(deck);
-  dealFlop(shuffledDeck, players)
+  let board = (shuffledDeck, []);
+  dealToPlayers(board, players, 2)
 };
 
 let printPlayers = (players) =>
