@@ -44,8 +44,9 @@ let make = (_children) => {
       let prompts = [player1Prompt, player2Prompt];
       let (players, dealer) = processPlayers([], state.players, state.dealer, prompts);
       /* deal flop*/
-      let (deck, flopPlayers) = deal(state.players);
-      ReasonReact.Update({...state, round, players, dealer})
+      let board = (state.deck, players);
+      let (deck, flopPlayers) = dealToPlayers(board, players, 1);
+      ReasonReact.Update({...state, round, players: flopPlayers, dealer, deck})
     | Middle(prompt) =>
       let round = Middle;
       ReasonReact.Update({...state, round})

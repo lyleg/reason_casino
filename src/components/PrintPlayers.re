@@ -6,7 +6,7 @@ let make = (~players, ~dealer, _children) => {
   ...component, /* spread the template's other defaults into here  */
   render: (self) =>
     <div style=(ReactDOMRe.Style.make(~color="#444444", ~fontSize="22px", ()))>
-      <h1> (ReasonReact.stringToElement("Players")) </h1>
+      <h1> (ReasonReact.stringToElement("Players!")) </h1>
       (
         ReasonReact.arrayToElement(
           Array.of_list(

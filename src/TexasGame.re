@@ -30,15 +30,26 @@ type round =
   | Middle
   | End;
 
-let rec dealToPlayers = (board, playersToBeDelt, numCards) =>
-  /* only works with fresh players */
+let rec dealToPlayers = (board, playersToBeDelt: players, numCards) =>
   switch playersToBeDelt {
   | [] => board
   | [hd, ...tl] =>
     let (deck, players) = board;
     let (deltCards, newDeck) = Deck.getCards([], deck, numCards);
-    let playerWithNewCard = {...hd, hand: deltCards};
-    let newPlayers = List.append(players, [playerWithNewCard]);
+    /* if player already has card ,merge, else new player */
+    let currentPlayer = List.filter((player: player) => hd.id == player.id, players);
+    let newPlayers =
+      switch currentPlayer {
+      | [] =>
+        let playerWithNewCard = {...hd, hand: deltCards};
+        List.append(players, [playerWithNewCard])
+      | [player] =>
+        let playerWithNewCard = {...player, hand: List.append(player.hand, deltCards)};
+        let playersWithoutCurrentPlayer =
+          /* Not crazy about the filtering stuff */
+          List.filter((player: player) => hd.id != player.id, players);
+        List.append(playersWithoutCurrentPlayer, [playerWithNewCard])
+      };
     let newBoard = (newDeck, newPlayers);
     dealToPlayers(newBoard, tl, numCards)
   };
