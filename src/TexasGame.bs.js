@@ -6,6 +6,20 @@ var Card$ReactTemplate = require("./Card.bs.js");
 var Deck$ReactTemplate = require("./Deck.bs.js");
 var Caml_builtin_exceptions = require("bs-platform/lib/js/caml_builtin_exceptions.js");
 
+function stringFromRound(round) {
+  switch (round) {
+    case 0 : 
+        return "PreFlop";
+    case 1 : 
+        return "Flop";
+    case 2 : 
+        return "Middle";
+    case 3 : 
+        return "End";
+    
+  }
+}
+
 function dealToPlayers(_board, _playersToBeDelt, numCards) {
   while(true) {
     var playersToBeDelt = _playersToBeDelt;
@@ -27,7 +41,7 @@ function dealToPlayers(_board, _playersToBeDelt, numCards) {
                 Caml_builtin_exceptions.match_failure,
                 [
                   "TexasGame.re",
-                  42,
+                  50,
                   6
                 ]
               ];
@@ -127,6 +141,7 @@ function printPlayers(players) {
               }), players);
 }
 
+exports.stringFromRound = stringFromRound;
 exports.dealToPlayers = dealToPlayers;
 exports.dealToDealer = dealToDealer;
 exports.deal = deal;

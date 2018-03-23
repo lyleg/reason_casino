@@ -30,13 +30,21 @@ type round =
   | Middle
   | End;
 
+let stringFromRound = (round) =>
+  switch round {
+  | PreFlop => "PreFlop"
+  | Flop => "Flop"
+  | Middle => "Middle"
+  | End => "End"
+  };
+
 let rec dealToPlayers = (board, playersToBeDelt: players, numCards) =>
   switch playersToBeDelt {
   | [] => board
   | [hd, ...tl] =>
     let (deck, players) = board;
     let (deltCards, newDeck) = Deck.getCards([], deck, numCards);
-    /* if player already has card ,merge, else new player */
+    /* no List.find_opt with this version of OCAML,  */
     let currentPlayer = List.filter((player: player) => hd.id == player.id, players);
     let newPlayers =
       switch currentPlayer {

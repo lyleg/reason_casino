@@ -58,10 +58,12 @@ let make = (_children) => {
       let round = Flop;
       ReasonReact.Update({...state, deck, players, round})
     },
-  render: (self) =>
+  render: (self) => {
+    let round = stringFromRound(self.state.round);
     <div>
       <PrintPlayers players=self.state.players dealer=self.state.dealer />
       <PokerPrompt round=self.state.round onPrompt=((action: action) => self.send(action)) />
-      <PokerStats round=self.state.round players=self.state.players pool=self.state.pool />
+      <PokerStats round players=self.state.players pool=self.state.pool />
     </div>
+  }
 };

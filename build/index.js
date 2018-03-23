@@ -30777,9 +30777,10 @@ var component = ReasonReact.reducerComponent("Texas");
 function make() {
   var newrecord = component.slice();
   newrecord[/* render */9] = (function (self) {
+      var round = TexasGame$ReactTemplate.stringFromRound(self[/* state */2][/* round */2]);
       return React.createElement("div", undefined, ReasonReact.element(/* None */0, /* None */0, PrintPlayers$ReactTemplate.make(self[/* state */2][/* players */1], self[/* state */2][/* dealer */3], /* array */[])), ReasonReact.element(/* None */0, /* None */0, PokerPrompt$ReactTemplate.make(self[/* state */2][/* round */2], (function (action) {
                             return Curry._1(self[/* send */4], action);
-                          }), /* array */[])), ReasonReact.element(/* None */0, /* None */0, PokerStats$ReactTemplate.make(self[/* state */2][/* round */2], self[/* state */2][/* players */1], self[/* state */2][/* pool */4], /* array */[])));
+                          }), /* array */[])), ReasonReact.element(/* None */0, /* None */0, PokerStats$ReactTemplate.make(round, self[/* state */2][/* players */1], self[/* state */2][/* pool */4], /* array */[])));
     });
   newrecord[/* initialState */10] = (function () {
       return /* record */[
@@ -32284,6 +32285,20 @@ var Card$ReactTemplate = __webpack_require__(65);
 var Deck$ReactTemplate = __webpack_require__(220);
 var Caml_builtin_exceptions = __webpack_require__(6);
 
+function stringFromRound(round) {
+  switch (round) {
+    case 0 : 
+        return "PreFlop";
+    case 1 : 
+        return "Flop";
+    case 2 : 
+        return "Middle";
+    case 3 : 
+        return "End";
+    
+  }
+}
+
 function dealToPlayers(_board, _playersToBeDelt, numCards) {
   while(true) {
     var playersToBeDelt = _playersToBeDelt;
@@ -32305,7 +32320,7 @@ function dealToPlayers(_board, _playersToBeDelt, numCards) {
                 Caml_builtin_exceptions.match_failure,
                 [
                   "TexasGame.re",
-                  42,
+                  50,
                   6
                 ]
               ];
@@ -32405,6 +32420,7 @@ function printPlayers(players) {
               }), players);
 }
 
+exports.stringFromRound = stringFromRound;
 exports.dealToPlayers = dealToPlayers;
 exports.dealToDealer = dealToDealer;
 exports.deal = deal;
@@ -32521,10 +32537,10 @@ var ReasonReact = __webpack_require__(20);
 
 var component = ReasonReact.statelessComponent("PokerStats");
 
-function make(_, _$1, pool, _$2) {
+function make(round, _, pool, _$1) {
   var newrecord = component.slice();
   newrecord[/* render */9] = (function () {
-      return React.createElement("div", undefined, React.createElement("h2", undefined, "Statz"), React.createElement("div", undefined, React.createElement("h3", undefined, "Pool: "), React.createElement("div", undefined, String(pool))));
+      return React.createElement("div", undefined, React.createElement("h2", undefined, "Statz"), React.createElement("div", undefined, React.createElement("h3", undefined, "Pool: "), React.createElement("div", undefined, String(pool))), React.createElement("div", undefined, React.createElement("h3", undefined, "Round: "), React.createElement("div", undefined, round)));
     });
   return newrecord;
 }
@@ -32607,7 +32623,7 @@ function make(players, dealer, _) {
                     color: "#444444",
                     fontSize: "22px"
                   }
-                }, React.createElement("h1", undefined, "Players!"), $$Array.of_list(List.mapi((function (idx, player) {
+                }, React.createElement("h1", undefined, "Players"), $$Array.of_list(List.mapi((function (idx, player) {
                             return React.createElement("div", {
                                         key: String(idx),
                                         style: {

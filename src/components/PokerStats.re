@@ -9,5 +9,9 @@ let make = (~round, ~players, ~pool, _children) => {
         <h3> (ReasonReact.stringToElement("Pool: ")) </h3>
         <div> (ReasonReact.stringToElement(string_of_int(pool))) </div>
       </div>
+      <div>
+        <h3> (ReasonReact.stringToElement("Round: ")) </h3>
+        <div> (ReasonReact.stringToElement(round)) </div>
+      </div>
     </div>
 };

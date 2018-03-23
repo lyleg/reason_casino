@@ -17,7 +17,7 @@ function make(players, dealer, _) {
                     color: "#444444",
                     fontSize: "22px"
                   }
-                }, React.createElement("h1", undefined, "Players!"), $$Array.of_list(List.mapi((function (idx, player) {
+                }, React.createElement("h1", undefined, "Players"), $$Array.of_list(List.mapi((function (idx, player) {
                             return React.createElement("div", {
                                         key: String(idx),
                                         style: {

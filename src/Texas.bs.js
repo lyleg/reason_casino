@@ -16,9 +16,10 @@ var component = ReasonReact.reducerComponent("Texas");
 function make() {
   var newrecord = component.slice();
   newrecord[/* render */9] = (function (self) {
+      var round = TexasGame$ReactTemplate.stringFromRound(self[/* state */2][/* round */2]);
       return React.createElement("div", undefined, ReasonReact.element(/* None */0, /* None */0, PrintPlayers$ReactTemplate.make(self[/* state */2][/* players */1], self[/* state */2][/* dealer */3], /* array */[])), ReasonReact.element(/* None */0, /* None */0, PokerPrompt$ReactTemplate.make(self[/* state */2][/* round */2], (function (action) {
                             return Curry._1(self[/* send */4], action);
-                          }), /* array */[])), ReasonReact.element(/* None */0, /* None */0, PokerStats$ReactTemplate.make(self[/* state */2][/* round */2], self[/* state */2][/* players */1], self[/* state */2][/* pool */4], /* array */[])));
+                          }), /* array */[])), ReasonReact.element(/* None */0, /* None */0, PokerStats$ReactTemplate.make(round, self[/* state */2][/* players */1], self[/* state */2][/* pool */4], /* array */[])));
     });
   newrecord[/* initialState */10] = (function () {
       return /* record */[
