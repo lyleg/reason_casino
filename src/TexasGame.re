@@ -45,19 +45,15 @@ let rec dealToPlayers = (board, playersToBeDelt: players, numCards) =>
     let (deck, players) = board;
     let (deltCards, newDeck) = Deck.getCards([], deck, numCards);
     /* no List.find_opt with this version of OCAML,  */
-    let currentPlayer = List.filter((player: player) => hd.id == player.id, players);
-    let newPlayers =
+    let currentPlayer = players |> List.filter((player: player) => hd.id == player.id);
+    let (currentPlayer, filteredPlayers) =
+      players |> List.partition((player: player) => hd.id == player.id);
+    let playerWithNewCard =
       switch currentPlayer {
-      | [] =>
-        let playerWithNewCard = {...hd, hand: deltCards};
-        List.append(players, [playerWithNewCard])
-      | [player] =>
-        let playerWithNewCard = {...player, hand: List.append(player.hand, deltCards)};
-        let playersWithoutCurrentPlayer =
-          /* Not crazy about the filtering stuff */
-          List.filter((player: player) => hd.id != player.id, players);
-        List.append(playersWithoutCurrentPlayer, [playerWithNewCard])
+      | [] => {...hd, hand: deltCards}
+      | [player] => {...player, hand: List.append(player.hand, deltCards)}
       };
+    let newPlayers = List.append(filteredPlayers, [playerWithNewCard]);
     let newBoard = (newDeck, newPlayers);
     dealToPlayers(newBoard, tl, numCards)
   };

@@ -32308,63 +32308,51 @@ function dealToPlayers(_board, _playersToBeDelt, numCards) {
       var hd = playersToBeDelt[0];
       var match = Deck$ReactTemplate.getCards(/* [] */0, board[0], numCards);
       var deltCards = match[0];
-      var currentPlayer = List.filter((function(hd){
+      List.filter((function(hd){
             return function (player) {
               return +(hd[/* id */0] === player[/* id */0]);
             }
             }(hd)))(players);
-      var newPlayers;
+      var match$1 = List.partition((function(hd){
+          return function (player) {
+            return +(hd[/* id */0] === player[/* id */0]);
+          }
+          }(hd)), players);
+      var currentPlayer = match$1[0];
+      var playerWithNewCard;
       if (currentPlayer) {
         if (currentPlayer[1]) {
           throw [
                 Caml_builtin_exceptions.match_failure,
                 [
                   "TexasGame.re",
-                  50,
+                  52,
                   6
                 ]
               ];
         } else {
           var player = currentPlayer[0];
-          var playerWithNewCard_000 = /* id */player[/* id */0];
-          var playerWithNewCard_001 = /* hand */List.append(player[/* hand */1], deltCards);
-          var playerWithNewCard_002 = /* money */player[/* money */2];
-          var playerWithNewCard_003 = /* name */player[/* name */3];
-          var playerWithNewCard_004 = /* src */player[/* src */4];
-          var playerWithNewCard = /* record */[
-            playerWithNewCard_000,
-            playerWithNewCard_001,
-            playerWithNewCard_002,
-            playerWithNewCard_003,
-            playerWithNewCard_004
+          playerWithNewCard = /* record */[
+            /* id */player[/* id */0],
+            /* hand */List.append(player[/* hand */1], deltCards),
+            /* money */player[/* money */2],
+            /* name */player[/* name */3],
+            /* src */player[/* src */4]
           ];
-          var playersWithoutCurrentPlayer = List.filter((function(hd){
-                return function (player) {
-                  return +(hd[/* id */0] !== player[/* id */0]);
-                }
-                }(hd)))(players);
-          newPlayers = List.append(playersWithoutCurrentPlayer, /* :: */[
-                playerWithNewCard,
-                /* [] */0
-              ]);
         }
       } else {
-        var playerWithNewCard_000$1 = /* id */hd[/* id */0];
-        var playerWithNewCard_002$1 = /* money */hd[/* money */2];
-        var playerWithNewCard_003$1 = /* name */hd[/* name */3];
-        var playerWithNewCard_004$1 = /* src */hd[/* src */4];
-        var playerWithNewCard$1 = /* record */[
-          playerWithNewCard_000$1,
+        playerWithNewCard = /* record */[
+          /* id */hd[/* id */0],
           /* hand */deltCards,
-          playerWithNewCard_002$1,
-          playerWithNewCard_003$1,
-          playerWithNewCard_004$1
+          /* money */hd[/* money */2],
+          /* name */hd[/* name */3],
+          /* src */hd[/* src */4]
         ];
-        newPlayers = List.append(players, /* :: */[
-              playerWithNewCard$1,
-              /* [] */0
-            ]);
       }
+      var newPlayers = List.append(match$1[1], /* :: */[
+            playerWithNewCard,
+            /* [] */0
+          ]);
       var newBoard_000 = match[1];
       var newBoard = /* tuple */[
         newBoard_000,
