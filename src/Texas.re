@@ -49,6 +49,13 @@ let make = (_children) => {
       ReasonReact.Update({...state, round, players: flopPlayers, dealer, deck})
     | Middle(prompt) =>
       let round = Middle;
+      let player1Prompt = randomBot(1);
+      let player2Prompt = {id: 2, prompt};
+      let prompts = [player1Prompt, player2Prompt];
+      let (players, dealer) = processPlayers([], state.players, state.dealer, prompts);
+      /* deal flop*/
+      let board = (state.deck, players);
+      let (deck, flopPlayers) = dealToPlayers(board, players, 1);
       ReasonReact.Update({...state, round})
     | River(prompt) =>
       let round = Middle;

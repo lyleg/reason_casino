@@ -44,7 +44,6 @@ let rec dealToPlayers = (board, playersToBeDelt: players, numCards) =>
   | [hd, ...tl] =>
     let (deck, players) = board;
     let (deltCards, newDeck) = Deck.getCards([], deck, numCards);
-    /* no List.find_opt with this version of OCAML,  */
     let currentPlayer = players |> List.filter((player: player) => hd.id == player.id);
     let (currentPlayer, filteredPlayers) =
       players |> List.partition((player: player) => hd.id == player.id);

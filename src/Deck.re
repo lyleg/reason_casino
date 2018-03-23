@@ -20,9 +20,9 @@ let rec getCards = (cards, deck, numCards) =>
   };
 
 let shuffle = (deck) => {
-  let nd = List.map((c) => (Random.bits(), c), deck);
-  let sond = List.sort(compare, nd);
-  List.map(snd, sond)
+  let cardPlusRandomTuples = List.map((c) => (Random.bits(), c), deck);
+  let sortedCardPlusRandomTuples = List.sort(compare, cardPlusRandomTuples);
+  List.map(snd, sortedCardPlusRandomTuples)
 };
 
 let makeDeck = () =>
