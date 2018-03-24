@@ -15,14 +15,7 @@ function stringFromRound(round) {
     case 2 : 
         return "Middle";
     case 3 : 
-        throw [
-              Caml_builtin_exceptions.match_failure,
-              [
-                "TexasGame.re",
-                29,
-                2
-              ]
-            ];
+        return "River";
     case 4 : 
         return "End";
     
@@ -56,7 +49,7 @@ function dealToPlayers(_board, _playersToBeDelt, numCards) {
                 Caml_builtin_exceptions.match_failure,
                 [
                   "TexasGame.re",
-                  46,
+                  43,
                   6
                 ]
               ];

@@ -2,7 +2,7 @@ let component = ReasonReact.statelessComponent("PokerStats");
 
 let make = (~round, ~players, ~pool, _children) => {
   ...component,
-  render: (self) =>
+  render: (_self) =>
     <div>
       <h2> (ReasonReact.stringToElement("Statz")) </h2>
       <div>

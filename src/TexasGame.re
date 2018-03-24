@@ -1,7 +1,3 @@
-open Card;
-
-open Deck;
-
 open Board;
 
 type dealer = player;
@@ -30,6 +26,7 @@ let stringFromRound = (round) =>
   | PreFlop => "PreFlop"
   | Flop => "Flop"
   | Middle => "Middle"
+  | River => "River"
   | End => "End"
   };
 
