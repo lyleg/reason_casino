@@ -2,16 +2,16 @@ open TexasGame;
 
 open Board;
 
-let randomBot = (id) => {
+let randomBot = (id: int) : playerPrompt => {
   let rand = Random.int(3);
-  let prompt =
+  let foo: promptResponse =
     switch rand {
     | 0 => Check
     | 1 => Fold
     | 2 => Bet
     | _ => Check
     };
-  {id, prompt}
+  {id, foo}
 };
 
 let processPlayer = (player: player, dealer: player, prompts: prompts) => {

@@ -18,12 +18,6 @@ type playerPrompt = {
 
 type prompts = list(playerPrompt);
 
-/*type action =
-    | Deal
-    | Flop(prompt)
-    | Middle(prompt)
-    | River(prompt);
-  */
 type round =
   | PreFlop
   | Flop

@@ -15,6 +15,7 @@ type state = {
 };
 
 type action =
+  | Deal
   | Prompt(promptResponse);
 
 let component = ReasonReact.reducerComponent("Texas");
@@ -33,6 +34,9 @@ let make = (_children) => {
   },
   reducer: (action, state) =>
     switch action {
+    | Deal =>
+      let (deck, deltPlayers) = deal(state.players);
+      ReasonReact.Update({...state, round: Flop, players: deltPlayers, deck})
     | Prompt(promptResponse) =>
       let player1Prompt = randomBot(1);
       let player2Prompt = {id: 2, promptResponse};
@@ -50,9 +54,6 @@ let make = (_children) => {
         | River =>
           let (deck, deltPlayers) = dealToPlayers(board, players, 1);
           (deck, deltPlayers, End)
-        | Deal =>
-          let (deck, players) = deal(state.players);
-          (deck, deltPlayers, Flop)
         };
       ReasonReact.Update({...state, round, players: deltPlayers, dealer, deck})
     },
@@ -60,7 +61,11 @@ let make = (_children) => {
     let round = stringFromRound(self.state.round);
     <div>
       <PrintPlayers players=self.state.players dealer=self.state.dealer />
-      <PokerPrompt round=self.state.round onPrompt=((action: action) => self.send(action)) />
+      <PokerPrompt
+        round=self.state.round
+        onDeal=(() => self.send(Deal))
+        onPrompt=((promptResponse: promptResponse) => self.send(Prompt(promptResponse)))
+      />
       <PokerStats round players=self.state.players pool=self.state.pool />
     </div>
   }
