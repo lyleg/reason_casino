@@ -21,7 +21,6 @@
   "namespace": true,
   "bs-dependencies": [
     "reason-react",
-    "bs-glamor"
   ],
   "refmt": 3
 }

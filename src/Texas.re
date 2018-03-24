@@ -1,10 +1,3 @@
-/*
- Firstly, you are dealt your hole cards. Then there is a round of betting.
- Then the players remaining see a flop. Then there is another round of betting.
- Then you see a turn card. Then another round of betting. Then a final river card.
- Then one more round of betting.
- The best five card hand wins.
- */
 open TexasGame;
 
 open Deck;
@@ -20,6 +13,9 @@ type state = {
   dealer,
   pool
 };
+
+type action =
+  | Prompt(promptResponse);
 
 let component = ReasonReact.reducerComponent("Texas");
 
@@ -37,33 +33,28 @@ let make = (_children) => {
   },
   reducer: (action, state) =>
     switch action {
-    | Flop(prompt) =>
-      let round = Middle;
+    | Prompt(promptResponse) =>
       let player1Prompt = randomBot(1);
-      let player2Prompt = {id: 2, prompt};
+      let player2Prompt = {id: 2, promptResponse};
       let prompts = [player1Prompt, player2Prompt];
       let (players, dealer) = processPlayers([], state.players, state.dealer, prompts);
-      /* deal flop*/
       let board = (state.deck, players);
-      let (deck, flopPlayers) = dealToPlayers(board, players, 1);
-      ReasonReact.Update({...state, round, players: flopPlayers, dealer, deck})
-    | Middle(prompt) =>
-      let round = Middle;
-      let player1Prompt = randomBot(1);
-      let player2Prompt = {id: 2, prompt};
-      let prompts = [player1Prompt, player2Prompt];
-      let (players, dealer) = processPlayers([], state.players, state.dealer, prompts);
-      /* deal flop*/
-      let board = (state.deck, players);
-      let (deck, flopPlayers) = dealToPlayers(board, players, 1);
-      ReasonReact.Update({...state, round})
-    | River(prompt) =>
-      let round = Middle;
-      ReasonReact.Update({...state, round})
-    | Deal =>
-      let (deck, players) = deal(state.players);
-      let round = Flop;
-      ReasonReact.Update({...state, deck, players, round})
+      let (deck, deltPlayers, round) =
+        switch state.round {
+        | Flop =>
+          let (deck, deltPlayers) = dealToPlayers(board, players, 1);
+          (deck, deltPlayers, Middle)
+        | Middle =>
+          let (deck, deltPlayers) = dealToPlayers(board, players, 1);
+          (deck, deltPlayers, River)
+        | River =>
+          let (deck, deltPlayers) = dealToPlayers(board, players, 1);
+          (deck, deltPlayers, End)
+        | Deal =>
+          let (deck, players) = deal(state.players);
+          (deck, deltPlayers, Flop)
+        };
+      ReasonReact.Update({...state, round, players: deltPlayers, dealer, deck})
     },
   render: (self) => {
     let round = stringFromRound(self.state.round);

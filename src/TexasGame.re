@@ -6,24 +6,24 @@ open Board;
 
 type dealer = player;
 
-type prompt =
+type promptResponse =
   | Check
   | Fold
   | Bet;
 
 type playerPrompt = {
   id: int,
-  prompt
+  promptResponse
 };
 
 type prompts = list(playerPrompt);
 
-type action =
-  | Deal
-  | Flop(prompt)
-  | Middle(prompt)
-  | River(prompt);
-
+/*type action =
+    | Deal
+    | Flop(prompt)
+    | Middle(prompt)
+    | River(prompt);
+  */
 type round =
   | PreFlop
   | Flop
