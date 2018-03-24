@@ -4,20 +4,20 @@ open Board;
 
 let randomBot = (id: int) : playerPrompt => {
   let rand = Random.int(3);
-  let foo: promptResponse =
+  let promptResponse: promptResponse =
     switch rand {
     | 0 => Check
     | 1 => Fold
     | 2 => Bet
     | _ => Check
     };
-  {id, foo}
+  {id, promptResponse}
 };
 
 let processPlayer = (player: player, dealer: player, prompts: prompts) => {
   let playerPrompt = prompts |> List.find((x: playerPrompt) => x.id == player.id);
   let wager =
-    switch playerPrompt.prompt {
+    switch playerPrompt.promptResponse {
     | Bet => 100
     | _ => 0
     };

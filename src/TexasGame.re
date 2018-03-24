@@ -22,6 +22,7 @@ type round =
   | PreFlop
   | Flop
   | Middle
+  | River
   | End;
 
 let stringFromRound = (round) =>
