@@ -30790,7 +30790,7 @@ function make() {
               /* deck : [] */0,
               /* players : :: */[
                 /* record */[
-                  /* id */1,
+                  /* id */2,
                   /* hand : [] */0,
                   /* money */1000,
                   /* name */"John",
@@ -30798,7 +30798,7 @@ function make() {
                 ],
                 /* :: */[
                   /* record */[
-                    /* id */2,
+                    /* id */3,
                     /* hand : [] */0,
                     /* money */1000,
                     /* name */"Lyle",
@@ -30820,10 +30820,10 @@ function make() {
     });
   newrecord[/* reducer */12] = (function (action, state) {
       if (action) {
-        var player1Prompt = Player$ReactTemplate.randomBot(1);
+        var player1Prompt = Player$ReactTemplate.randomBot(2);
         var player2Prompt_001 = /* promptResponse */action[0];
         var player2Prompt = /* record */[
-          /* id */2,
+          /* id */3,
           player2Prompt_001
         ];
         var prompts_001 = /* :: */[

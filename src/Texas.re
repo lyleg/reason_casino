@@ -27,8 +27,8 @@ let make = (_children) => {
     pool: 0,
     round: PreFlop,
     players: [
-      {id: 1, hand: [], name: "John", money: 1000, src: Computer},
-      {id: 2, hand: [], name: "Lyle", money: 1000, src: Human}
+      {id: 2, hand: [], name: "John", money: 1000, src: Computer},
+      {id: 3, hand: [], name: "Lyle", money: 1000, src: Human}
     ],
     dealer: {id: 1, hand: [], name: "Dealer", money: 0, src: Computer}
   },
@@ -38,8 +38,8 @@ let make = (_children) => {
       let (deck, deltPlayers) = deal(state.players);
       ReasonReact.Update({...state, round: Flop, players: deltPlayers, deck})
     | Prompt(promptResponse) =>
-      let player1Prompt = randomBot(1);
-      let player2Prompt = {id: 2, promptResponse};
+      let player1Prompt = randomBot(2);
+      let player2Prompt = {id: 3, promptResponse};
       let prompts = [player1Prompt, player2Prompt];
       let (players, dealer) = processPlayers([], state.players, state.dealer, prompts);
       let board = (state.deck, players);
