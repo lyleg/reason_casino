@@ -94,7 +94,7 @@ function dealToPlayers(_board, _playersToBeDelt, numCards) {
 function dealToDealer(deck, dealer, numCards) {
   var match = Deck$ReactTemplate.getCards(/* [] */0, deck, numCards);
   var dealerWithNewCard_000 = /* id */dealer[/* id */0];
-  var dealerWithNewCard_001 = /* hand */match[0];
+  var dealerWithNewCard_001 = /* hand */List.append(dealer[/* hand */1], match[0]);
   var dealerWithNewCard_002 = /* money */dealer[/* money */2];
   var dealerWithNewCard_003 = /* name */dealer[/* name */3];
   var dealerWithNewCard_004 = /* src */dealer[/* src */4];

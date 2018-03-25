@@ -27,10 +27,10 @@ let make = (_children) => {
     pool: 0,
     round: PreFlop,
     players: [
-      {id: 2, hand: [], name: "John", money: 1000, src: Computer},
-      {id: 3, hand: [], name: "Lyle", money: 1000, src: Human}
+      {id: 1, hand: [], name: "John", money: 1000, src: Computer},
+      {id: 2, hand: [], name: "Lyle", money: 1000, src: Human}
     ],
-    dealer: {id: 1, hand: [], name: "Dealer", money: 0, src: Computer}
+    dealer: {id: 0, hand: [], name: "Dealer", money: 0, src: Computer}
   },
   reducer: (action, state) =>
     switch action {
@@ -38,28 +38,28 @@ let make = (_children) => {
       let (deck, deltPlayers) = deal(state.players);
       ReasonReact.Update({...state, round: Flop, players: deltPlayers, deck})
     | Prompt(promptResponse) =>
-      let player1Prompt = randomBot(2);
-      let player2Prompt = {id: 3, promptResponse};
+      let player1Prompt = randomBot(1);
+      let player2Prompt = {id: 2, promptResponse};
       let prompts = [player1Prompt, player2Prompt];
       let (players, dealer) = processPlayers([], state.players, state.dealer, prompts);
-      let board = (state.deck, players);
+      let deck = state.deck;
       let (deck, deltDealer, round) =
         switch state.round {
         | PreFlop =>
-          let (deck, deltDealer) = dealToPlayers(board, [dealer], 0);
-          (deck, deltDealer |> List.hd, Flop)
+          let (deck, deltDealer) = dealToDealer(deck, dealer, 0);
+          (deck, deltDealer, Flop)
         | Flop =>
-          let (deck, deltDealer) = dealToPlayers(board, [dealer], 3);
-          (deck, deltDealer |> List.hd, Middle)
+          let (deck, deltDealer) = dealToDealer(deck, dealer, 3);
+          (deck, deltDealer, Middle)
         | Middle =>
-          let (deck, deltDealer) = dealToPlayers(board, [dealer], 1);
-          (deck, deltDealer |> List.hd, River)
+          let (deck, deltDealer) = dealToDealer(deck, dealer, 1);
+          (deck, deltDealer, River)
         | River =>
-          let (deck, deltDealer) = dealToPlayers(board, [dealer], 1);
-          (deck, deltDealer |> List.hd, End)
+          let (deck, deltDealer) = dealToDealer(deck, dealer, 1);
+          (deck, deltDealer, End)
         | End =>
-          let (deck, deltDealer) = dealToPlayers(board, [dealer], 0);
-          (deck, deltDealer |> List.hd, End)
+          let (deck, deltDealer) = dealToDealer(deck, dealer, 0);
+          (deck, deltDealer, End)
         };
       ReasonReact.Update({...state, round, players, dealer: deltDealer, deck})
     },

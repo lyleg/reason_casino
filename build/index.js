@@ -538,7 +538,7 @@ module.exports = shouldUseNative() ? Object.assign : function (target, source) {
 
 var _prodInvariant = __webpack_require__(3);
 
-var DOMProperty = __webpack_require__(16);
+var DOMProperty = __webpack_require__(15);
 var ReactDOMComponentFlags = __webpack_require__(66);
 
 var invariant = __webpack_require__(1);
@@ -2526,6 +2526,219 @@ function getPooledWarningPropertyDefinition(propName, getVal) {
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
+/* WEBPACK VAR INJECTION */(function(process) {/**
+ * Copyright (c) 2013-present, Facebook, Inc.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ *
+ */
+
+
+
+var _prodInvariant = __webpack_require__(3);
+
+var invariant = __webpack_require__(1);
+
+function checkMask(value, bitmask) {
+  return (value & bitmask) === bitmask;
+}
+
+var DOMPropertyInjection = {
+  /**
+   * Mapping from normalized, camelcased property names to a configuration that
+   * specifies how the associated DOM property should be accessed or rendered.
+   */
+  MUST_USE_PROPERTY: 0x1,
+  HAS_BOOLEAN_VALUE: 0x4,
+  HAS_NUMERIC_VALUE: 0x8,
+  HAS_POSITIVE_NUMERIC_VALUE: 0x10 | 0x8,
+  HAS_OVERLOADED_BOOLEAN_VALUE: 0x20,
+
+  /**
+   * Inject some specialized knowledge about the DOM. This takes a config object
+   * with the following properties:
+   *
+   * isCustomAttribute: function that given an attribute name will return true
+   * if it can be inserted into the DOM verbatim. Useful for data-* or aria-*
+   * attributes where it's impossible to enumerate all of the possible
+   * attribute names,
+   *
+   * Properties: object mapping DOM property name to one of the
+   * DOMPropertyInjection constants or null. If your attribute isn't in here,
+   * it won't get written to the DOM.
+   *
+   * DOMAttributeNames: object mapping React attribute name to the DOM
+   * attribute name. Attribute names not specified use the **lowercase**
+   * normalized name.
+   *
+   * DOMAttributeNamespaces: object mapping React attribute name to the DOM
+   * attribute namespace URL. (Attribute names not specified use no namespace.)
+   *
+   * DOMPropertyNames: similar to DOMAttributeNames but for DOM properties.
+   * Property names not specified use the normalized name.
+   *
+   * DOMMutationMethods: Properties that require special mutation methods. If
+   * `value` is undefined, the mutation method should unset the property.
+   *
+   * @param {object} domPropertyConfig the config as described above.
+   */
+  injectDOMPropertyConfig: function (domPropertyConfig) {
+    var Injection = DOMPropertyInjection;
+    var Properties = domPropertyConfig.Properties || {};
+    var DOMAttributeNamespaces = domPropertyConfig.DOMAttributeNamespaces || {};
+    var DOMAttributeNames = domPropertyConfig.DOMAttributeNames || {};
+    var DOMPropertyNames = domPropertyConfig.DOMPropertyNames || {};
+    var DOMMutationMethods = domPropertyConfig.DOMMutationMethods || {};
+
+    if (domPropertyConfig.isCustomAttribute) {
+      DOMProperty._isCustomAttributeFunctions.push(domPropertyConfig.isCustomAttribute);
+    }
+
+    for (var propName in Properties) {
+      !!DOMProperty.properties.hasOwnProperty(propName) ? process.env.NODE_ENV !== 'production' ? invariant(false, 'injectDOMPropertyConfig(...): You\'re trying to inject DOM property \'%s\' which has already been injected. You may be accidentally injecting the same DOM property config twice, or you may be injecting two configs that have conflicting property names.', propName) : _prodInvariant('48', propName) : void 0;
+
+      var lowerCased = propName.toLowerCase();
+      var propConfig = Properties[propName];
+
+      var propertyInfo = {
+        attributeName: lowerCased,
+        attributeNamespace: null,
+        propertyName: propName,
+        mutationMethod: null,
+
+        mustUseProperty: checkMask(propConfig, Injection.MUST_USE_PROPERTY),
+        hasBooleanValue: checkMask(propConfig, Injection.HAS_BOOLEAN_VALUE),
+        hasNumericValue: checkMask(propConfig, Injection.HAS_NUMERIC_VALUE),
+        hasPositiveNumericValue: checkMask(propConfig, Injection.HAS_POSITIVE_NUMERIC_VALUE),
+        hasOverloadedBooleanValue: checkMask(propConfig, Injection.HAS_OVERLOADED_BOOLEAN_VALUE)
+      };
+      !(propertyInfo.hasBooleanValue + propertyInfo.hasNumericValue + propertyInfo.hasOverloadedBooleanValue <= 1) ? process.env.NODE_ENV !== 'production' ? invariant(false, 'DOMProperty: Value can be one of boolean, overloaded boolean, or numeric value, but not a combination: %s', propName) : _prodInvariant('50', propName) : void 0;
+
+      if (process.env.NODE_ENV !== 'production') {
+        DOMProperty.getPossibleStandardName[lowerCased] = propName;
+      }
+
+      if (DOMAttributeNames.hasOwnProperty(propName)) {
+        var attributeName = DOMAttributeNames[propName];
+        propertyInfo.attributeName = attributeName;
+        if (process.env.NODE_ENV !== 'production') {
+          DOMProperty.getPossibleStandardName[attributeName] = propName;
+        }
+      }
+
+      if (DOMAttributeNamespaces.hasOwnProperty(propName)) {
+        propertyInfo.attributeNamespace = DOMAttributeNamespaces[propName];
+      }
+
+      if (DOMPropertyNames.hasOwnProperty(propName)) {
+        propertyInfo.propertyName = DOMPropertyNames[propName];
+      }
+
+      if (DOMMutationMethods.hasOwnProperty(propName)) {
+        propertyInfo.mutationMethod = DOMMutationMethods[propName];
+      }
+
+      DOMProperty.properties[propName] = propertyInfo;
+    }
+  }
+};
+
+/* eslint-disable max-len */
+var ATTRIBUTE_NAME_START_CHAR = ':A-Z_a-z\\u00C0-\\u00D6\\u00D8-\\u00F6\\u00F8-\\u02FF\\u0370-\\u037D\\u037F-\\u1FFF\\u200C-\\u200D\\u2070-\\u218F\\u2C00-\\u2FEF\\u3001-\\uD7FF\\uF900-\\uFDCF\\uFDF0-\\uFFFD';
+/* eslint-enable max-len */
+
+/**
+ * DOMProperty exports lookup objects that can be used like functions:
+ *
+ *   > DOMProperty.isValid['id']
+ *   true
+ *   > DOMProperty.isValid['foobar']
+ *   undefined
+ *
+ * Although this may be confusing, it performs better in general.
+ *
+ * @see http://jsperf.com/key-exists
+ * @see http://jsperf.com/key-missing
+ */
+var DOMProperty = {
+  ID_ATTRIBUTE_NAME: 'data-reactid',
+  ROOT_ATTRIBUTE_NAME: 'data-reactroot',
+
+  ATTRIBUTE_NAME_START_CHAR: ATTRIBUTE_NAME_START_CHAR,
+  ATTRIBUTE_NAME_CHAR: ATTRIBUTE_NAME_START_CHAR + '\\-.0-9\\u00B7\\u0300-\\u036F\\u203F-\\u2040',
+
+  /**
+   * Map from property "standard name" to an object with info about how to set
+   * the property in the DOM. Each object contains:
+   *
+   * attributeName:
+   *   Used when rendering markup or with `*Attribute()`.
+   * attributeNamespace
+   * propertyName:
+   *   Used on DOM node instances. (This includes properties that mutate due to
+   *   external factors.)
+   * mutationMethod:
+   *   If non-null, used instead of the property or `setAttribute()` after
+   *   initial render.
+   * mustUseProperty:
+   *   Whether the property must be accessed and mutated as an object property.
+   * hasBooleanValue:
+   *   Whether the property should be removed when set to a falsey value.
+   * hasNumericValue:
+   *   Whether the property must be numeric or parse as a numeric and should be
+   *   removed when set to a falsey value.
+   * hasPositiveNumericValue:
+   *   Whether the property must be positive numeric or parse as a positive
+   *   numeric and should be removed when set to a falsey value.
+   * hasOverloadedBooleanValue:
+   *   Whether the property can be used as a flag as well as with a value.
+   *   Removed when strictly equal to false; present without a value when
+   *   strictly equal to true; present with a value otherwise.
+   */
+  properties: {},
+
+  /**
+   * Mapping from lowercase property names to the properly cased version, used
+   * to warn in the case of missing properties. Available only in __DEV__.
+   *
+   * autofocus is predefined, because adding it to the property whitelist
+   * causes unintended side effects.
+   *
+   * @type {Object}
+   */
+  getPossibleStandardName: process.env.NODE_ENV !== 'production' ? { autofocus: 'autoFocus' } : null,
+
+  /**
+   * All of the isCustomAttribute() functions that have been injected.
+   */
+  _isCustomAttributeFunctions: [],
+
+  /**
+   * Checks whether a property name is a custom attribute.
+   * @method
+   */
+  isCustomAttribute: function (attributeName) {
+    for (var i = 0; i < DOMProperty._isCustomAttributeFunctions.length; i++) {
+      var isCustomAttributeFn = DOMProperty._isCustomAttributeFunctions[i];
+      if (isCustomAttributeFn(attributeName)) {
+        return true;
+      }
+    }
+    return false;
+  },
+
+  injection: DOMPropertyInjection
+};
+
+module.exports = DOMProperty;
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
+
+/***/ }),
+/* 16 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
 
 
 var Curry = __webpack_require__(13);
@@ -4178,219 +4391,6 @@ exports.merge = merge;
 
 
 /***/ }),
-/* 16 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(process) {/**
- * Copyright (c) 2013-present, Facebook, Inc.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- *
- */
-
-
-
-var _prodInvariant = __webpack_require__(3);
-
-var invariant = __webpack_require__(1);
-
-function checkMask(value, bitmask) {
-  return (value & bitmask) === bitmask;
-}
-
-var DOMPropertyInjection = {
-  /**
-   * Mapping from normalized, camelcased property names to a configuration that
-   * specifies how the associated DOM property should be accessed or rendered.
-   */
-  MUST_USE_PROPERTY: 0x1,
-  HAS_BOOLEAN_VALUE: 0x4,
-  HAS_NUMERIC_VALUE: 0x8,
-  HAS_POSITIVE_NUMERIC_VALUE: 0x10 | 0x8,
-  HAS_OVERLOADED_BOOLEAN_VALUE: 0x20,
-
-  /**
-   * Inject some specialized knowledge about the DOM. This takes a config object
-   * with the following properties:
-   *
-   * isCustomAttribute: function that given an attribute name will return true
-   * if it can be inserted into the DOM verbatim. Useful for data-* or aria-*
-   * attributes where it's impossible to enumerate all of the possible
-   * attribute names,
-   *
-   * Properties: object mapping DOM property name to one of the
-   * DOMPropertyInjection constants or null. If your attribute isn't in here,
-   * it won't get written to the DOM.
-   *
-   * DOMAttributeNames: object mapping React attribute name to the DOM
-   * attribute name. Attribute names not specified use the **lowercase**
-   * normalized name.
-   *
-   * DOMAttributeNamespaces: object mapping React attribute name to the DOM
-   * attribute namespace URL. (Attribute names not specified use no namespace.)
-   *
-   * DOMPropertyNames: similar to DOMAttributeNames but for DOM properties.
-   * Property names not specified use the normalized name.
-   *
-   * DOMMutationMethods: Properties that require special mutation methods. If
-   * `value` is undefined, the mutation method should unset the property.
-   *
-   * @param {object} domPropertyConfig the config as described above.
-   */
-  injectDOMPropertyConfig: function (domPropertyConfig) {
-    var Injection = DOMPropertyInjection;
-    var Properties = domPropertyConfig.Properties || {};
-    var DOMAttributeNamespaces = domPropertyConfig.DOMAttributeNamespaces || {};
-    var DOMAttributeNames = domPropertyConfig.DOMAttributeNames || {};
-    var DOMPropertyNames = domPropertyConfig.DOMPropertyNames || {};
-    var DOMMutationMethods = domPropertyConfig.DOMMutationMethods || {};
-
-    if (domPropertyConfig.isCustomAttribute) {
-      DOMProperty._isCustomAttributeFunctions.push(domPropertyConfig.isCustomAttribute);
-    }
-
-    for (var propName in Properties) {
-      !!DOMProperty.properties.hasOwnProperty(propName) ? process.env.NODE_ENV !== 'production' ? invariant(false, 'injectDOMPropertyConfig(...): You\'re trying to inject DOM property \'%s\' which has already been injected. You may be accidentally injecting the same DOM property config twice, or you may be injecting two configs that have conflicting property names.', propName) : _prodInvariant('48', propName) : void 0;
-
-      var lowerCased = propName.toLowerCase();
-      var propConfig = Properties[propName];
-
-      var propertyInfo = {
-        attributeName: lowerCased,
-        attributeNamespace: null,
-        propertyName: propName,
-        mutationMethod: null,
-
-        mustUseProperty: checkMask(propConfig, Injection.MUST_USE_PROPERTY),
-        hasBooleanValue: checkMask(propConfig, Injection.HAS_BOOLEAN_VALUE),
-        hasNumericValue: checkMask(propConfig, Injection.HAS_NUMERIC_VALUE),
-        hasPositiveNumericValue: checkMask(propConfig, Injection.HAS_POSITIVE_NUMERIC_VALUE),
-        hasOverloadedBooleanValue: checkMask(propConfig, Injection.HAS_OVERLOADED_BOOLEAN_VALUE)
-      };
-      !(propertyInfo.hasBooleanValue + propertyInfo.hasNumericValue + propertyInfo.hasOverloadedBooleanValue <= 1) ? process.env.NODE_ENV !== 'production' ? invariant(false, 'DOMProperty: Value can be one of boolean, overloaded boolean, or numeric value, but not a combination: %s', propName) : _prodInvariant('50', propName) : void 0;
-
-      if (process.env.NODE_ENV !== 'production') {
-        DOMProperty.getPossibleStandardName[lowerCased] = propName;
-      }
-
-      if (DOMAttributeNames.hasOwnProperty(propName)) {
-        var attributeName = DOMAttributeNames[propName];
-        propertyInfo.attributeName = attributeName;
-        if (process.env.NODE_ENV !== 'production') {
-          DOMProperty.getPossibleStandardName[attributeName] = propName;
-        }
-      }
-
-      if (DOMAttributeNamespaces.hasOwnProperty(propName)) {
-        propertyInfo.attributeNamespace = DOMAttributeNamespaces[propName];
-      }
-
-      if (DOMPropertyNames.hasOwnProperty(propName)) {
-        propertyInfo.propertyName = DOMPropertyNames[propName];
-      }
-
-      if (DOMMutationMethods.hasOwnProperty(propName)) {
-        propertyInfo.mutationMethod = DOMMutationMethods[propName];
-      }
-
-      DOMProperty.properties[propName] = propertyInfo;
-    }
-  }
-};
-
-/* eslint-disable max-len */
-var ATTRIBUTE_NAME_START_CHAR = ':A-Z_a-z\\u00C0-\\u00D6\\u00D8-\\u00F6\\u00F8-\\u02FF\\u0370-\\u037D\\u037F-\\u1FFF\\u200C-\\u200D\\u2070-\\u218F\\u2C00-\\u2FEF\\u3001-\\uD7FF\\uF900-\\uFDCF\\uFDF0-\\uFFFD';
-/* eslint-enable max-len */
-
-/**
- * DOMProperty exports lookup objects that can be used like functions:
- *
- *   > DOMProperty.isValid['id']
- *   true
- *   > DOMProperty.isValid['foobar']
- *   undefined
- *
- * Although this may be confusing, it performs better in general.
- *
- * @see http://jsperf.com/key-exists
- * @see http://jsperf.com/key-missing
- */
-var DOMProperty = {
-  ID_ATTRIBUTE_NAME: 'data-reactid',
-  ROOT_ATTRIBUTE_NAME: 'data-reactroot',
-
-  ATTRIBUTE_NAME_START_CHAR: ATTRIBUTE_NAME_START_CHAR,
-  ATTRIBUTE_NAME_CHAR: ATTRIBUTE_NAME_START_CHAR + '\\-.0-9\\u00B7\\u0300-\\u036F\\u203F-\\u2040',
-
-  /**
-   * Map from property "standard name" to an object with info about how to set
-   * the property in the DOM. Each object contains:
-   *
-   * attributeName:
-   *   Used when rendering markup or with `*Attribute()`.
-   * attributeNamespace
-   * propertyName:
-   *   Used on DOM node instances. (This includes properties that mutate due to
-   *   external factors.)
-   * mutationMethod:
-   *   If non-null, used instead of the property or `setAttribute()` after
-   *   initial render.
-   * mustUseProperty:
-   *   Whether the property must be accessed and mutated as an object property.
-   * hasBooleanValue:
-   *   Whether the property should be removed when set to a falsey value.
-   * hasNumericValue:
-   *   Whether the property must be numeric or parse as a numeric and should be
-   *   removed when set to a falsey value.
-   * hasPositiveNumericValue:
-   *   Whether the property must be positive numeric or parse as a positive
-   *   numeric and should be removed when set to a falsey value.
-   * hasOverloadedBooleanValue:
-   *   Whether the property can be used as a flag as well as with a value.
-   *   Removed when strictly equal to false; present without a value when
-   *   strictly equal to true; present with a value otherwise.
-   */
-  properties: {},
-
-  /**
-   * Mapping from lowercase property names to the properly cased version, used
-   * to warn in the case of missing properties. Available only in __DEV__.
-   *
-   * autofocus is predefined, because adding it to the property whitelist
-   * causes unintended side effects.
-   *
-   * @type {Object}
-   */
-  getPossibleStandardName: process.env.NODE_ENV !== 'production' ? { autofocus: 'autoFocus' } : null,
-
-  /**
-   * All of the isCustomAttribute() functions that have been injected.
-   */
-  _isCustomAttributeFunctions: [],
-
-  /**
-   * Checks whether a property name is a custom attribute.
-   * @method
-   */
-  isCustomAttribute: function (attributeName) {
-    for (var i = 0; i < DOMProperty._isCustomAttributeFunctions.length; i++) {
-      var isCustomAttributeFn = DOMProperty._isCustomAttributeFunctions[i];
-      if (isCustomAttributeFn(attributeName)) {
-        return true;
-      }
-    }
-    return false;
-  },
-
-  injection: DOMPropertyInjection
-};
-
-module.exports = DOMProperty;
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
-
-/***/ }),
 /* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -4868,7 +4868,7 @@ module.exports = ReactElement;
 "use strict";
 
 
-var List = __webpack_require__(15);
+var List = __webpack_require__(16);
 var Curry = __webpack_require__(13);
 var React = __webpack_require__(17);
 var Caml_builtin_exceptions = __webpack_require__(6);
@@ -13596,7 +13596,7 @@ module.exports = CSSProperty;
 
 
 
-var DOMProperty = __webpack_require__(16);
+var DOMProperty = __webpack_require__(15);
 var ReactDOMComponentTree = __webpack_require__(5);
 var ReactInstrumentation = __webpack_require__(9);
 
@@ -15390,7 +15390,7 @@ module.exports = getActiveElement;
 var _prodInvariant = __webpack_require__(3);
 
 var DOMLazyTree = __webpack_require__(24);
-var DOMProperty = __webpack_require__(16);
+var DOMProperty = __webpack_require__(15);
 var React = __webpack_require__(25);
 var ReactBrowserEventEmitter = __webpack_require__(36);
 var ReactCurrentOwner = __webpack_require__(12);
@@ -18969,7 +18969,7 @@ module.exports = EnterLeaveEventPlugin;
 
 
 
-var DOMProperty = __webpack_require__(16);
+var DOMProperty = __webpack_require__(15);
 
 var MUST_USE_PROPERTY = DOMProperty.injection.MUST_USE_PROPERTY;
 var HAS_BOOLEAN_VALUE = DOMProperty.injection.HAS_BOOLEAN_VALUE;
@@ -19653,7 +19653,7 @@ var AutoFocusUtils = __webpack_require__(131);
 var CSSPropertyOperations = __webpack_require__(132);
 var DOMLazyTree = __webpack_require__(24);
 var DOMNamespaces = __webpack_require__(47);
-var DOMProperty = __webpack_require__(16);
+var DOMProperty = __webpack_require__(15);
 var DOMPropertyOperations = __webpack_require__(78);
 var EventPluginHub = __webpack_require__(28);
 var EventPluginRegistry = __webpack_require__(31);
@@ -27131,7 +27131,7 @@ module.exports = getUnboundedScrollPosition;
 
 
 
-var DOMProperty = __webpack_require__(16);
+var DOMProperty = __webpack_require__(15);
 var EventPluginHub = __webpack_require__(28);
 var EventPluginUtils = __webpack_require__(41);
 var ReactComponentEnvironment = __webpack_require__(51);
@@ -29233,7 +29233,7 @@ module.exports = ReactMount.renderSubtreeIntoContainer;
 
 
 
-var DOMProperty = __webpack_require__(16);
+var DOMProperty = __webpack_require__(15);
 var EventPluginRegistry = __webpack_require__(31);
 var ReactComponentTreeHook = __webpack_require__(8);
 
@@ -29396,7 +29396,7 @@ module.exports = ReactDOMNullInputValuePropHook;
 
 
 
-var DOMProperty = __webpack_require__(16);
+var DOMProperty = __webpack_require__(15);
 var ReactComponentTreeHook = __webpack_require__(8);
 
 var warning = __webpack_require__(2);
@@ -30762,7 +30762,6 @@ exports.createClass = createClass;
 // Generated by BUCKLESCRIPT VERSION 2.2.3, PLEASE EDIT WITH CARE
 
 
-var List = __webpack_require__(15);
 var Block = __webpack_require__(60);
 var Curry = __webpack_require__(13);
 var React = __webpack_require__(17);
@@ -30790,7 +30789,7 @@ function make() {
               /* deck : [] */0,
               /* players : :: */[
                 /* record */[
-                  /* id */2,
+                  /* id */1,
                   /* hand : [] */0,
                   /* money */1000,
                   /* name */"John",
@@ -30798,7 +30797,7 @@ function make() {
                 ],
                 /* :: */[
                   /* record */[
-                    /* id */3,
+                    /* id */2,
                     /* hand : [] */0,
                     /* money */1000,
                     /* name */"Lyle",
@@ -30809,7 +30808,7 @@ function make() {
               ],
               /* round : PreFlop */0,
               /* dealer : record */[
-                /* id */1,
+                /* id */0,
                 /* hand : [] */0,
                 /* money */0,
                 /* name */"Dealer",
@@ -30820,10 +30819,10 @@ function make() {
     });
   newrecord[/* reducer */12] = (function (action, state) {
       if (action) {
-        var player1Prompt = Player$ReactTemplate.randomBot(2);
+        var player1Prompt = Player$ReactTemplate.randomBot(1);
         var player2Prompt_001 = /* promptResponse */action[0];
         var player2Prompt = /* record */[
-          /* id */3,
+          /* id */2,
           player2Prompt_001
         ];
         var prompts_001 = /* :: */[
@@ -30836,67 +30835,47 @@ function make() {
         ];
         var match = Player$ReactTemplate.processPlayers(/* [] */0, state[/* players */1], state[/* dealer */3], prompts);
         var dealer = match[1];
-        var players = match[0];
-        var board_000 = state[/* deck */0];
-        var board = /* tuple */[
-          board_000,
-          players
-        ];
+        var deck = state[/* deck */0];
         var match$1 = state[/* round */2];
         var match$2;
         switch (match$1) {
           case 0 : 
-              var match$3 = TexasGame$ReactTemplate.dealToPlayers(board, /* :: */[
-                    dealer,
-                    /* [] */0
-                  ], 0);
+              var match$3 = TexasGame$ReactTemplate.dealToDealer(deck, dealer, 0);
               match$2 = /* tuple */[
                 match$3[0],
-                List.hd(match$3[1]),
+                match$3[1],
                 /* Flop */1
               ];
               break;
           case 1 : 
-              var match$4 = TexasGame$ReactTemplate.dealToPlayers(board, /* :: */[
-                    dealer,
-                    /* [] */0
-                  ], 3);
+              var match$4 = TexasGame$ReactTemplate.dealToDealer(deck, dealer, 3);
               match$2 = /* tuple */[
                 match$4[0],
-                List.hd(match$4[1]),
+                match$4[1],
                 /* Middle */2
               ];
               break;
           case 2 : 
-              var match$5 = TexasGame$ReactTemplate.dealToPlayers(board, /* :: */[
-                    dealer,
-                    /* [] */0
-                  ], 1);
+              var match$5 = TexasGame$ReactTemplate.dealToDealer(deck, dealer, 1);
               match$2 = /* tuple */[
                 match$5[0],
-                List.hd(match$5[1]),
+                match$5[1],
                 /* River */3
               ];
               break;
           case 3 : 
-              var match$6 = TexasGame$ReactTemplate.dealToPlayers(board, /* :: */[
-                    dealer,
-                    /* [] */0
-                  ], 1);
+              var match$6 = TexasGame$ReactTemplate.dealToDealer(deck, dealer, 1);
               match$2 = /* tuple */[
                 match$6[0],
-                List.hd(match$6[1]),
+                match$6[1],
                 /* End */4
               ];
               break;
           case 4 : 
-              var match$7 = TexasGame$ReactTemplate.dealToPlayers(board, /* :: */[
-                    dealer,
-                    /* [] */0
-                  ], 0);
+              var match$7 = TexasGame$ReactTemplate.dealToDealer(deck, dealer, 0);
               match$2 = /* tuple */[
                 match$7[0],
-                List.hd(match$7[1]),
+                match$7[1],
                 /* End */4
               ];
               break;
@@ -30904,7 +30883,7 @@ function make() {
         }
         return /* Update */Block.__(0, [/* record */[
                     /* deck */match$2[0],
-                    /* players */players,
+                    /* players */match[0],
                     /* round */match$2[2],
                     /* dealer */match$2[1],
                     /* pool */state[/* pool */4]
@@ -30936,7 +30915,7 @@ exports.make = make;
 // Generated by BUCKLESCRIPT VERSION 2.2.3, PLEASE EDIT WITH CARE
 
 
-var List = __webpack_require__(15);
+var List = __webpack_require__(16);
 var Random = __webpack_require__(63);
 
 function randomBot(id) {
@@ -31369,7 +31348,7 @@ exports.from_hex = from_hex;
 "use strict";
 
 
-var List = __webpack_require__(15);
+var List = __webpack_require__(16);
 var Bytes = __webpack_require__(216);
 var Caml_int32 = __webpack_require__(40);
 var Caml_string = __webpack_require__(26);
@@ -31580,7 +31559,7 @@ exports.compare = compare;
 
 
 var Char = __webpack_require__(102);
-var List = __webpack_require__(15);
+var List = __webpack_require__(16);
 var Curry = __webpack_require__(13);
 var Caml_obj = __webpack_require__(59);
 var Caml_int32 = __webpack_require__(40);
@@ -32324,7 +32303,7 @@ exports.compare = compare;
 // Generated by BUCKLESCRIPT VERSION 2.2.3, PLEASE EDIT WITH CARE
 
 
-var List = __webpack_require__(15);
+var List = __webpack_require__(16);
 var Card$ReactTemplate = __webpack_require__(65);
 var Deck$ReactTemplate = __webpack_require__(220);
 var Caml_builtin_exceptions = __webpack_require__(6);
@@ -32417,7 +32396,7 @@ function dealToPlayers(_board, _playersToBeDelt, numCards) {
 function dealToDealer(deck, dealer, numCards) {
   var match = Deck$ReactTemplate.getCards(/* [] */0, deck, numCards);
   var dealerWithNewCard_000 = /* id */dealer[/* id */0];
-  var dealerWithNewCard_001 = /* hand */match[0];
+  var dealerWithNewCard_001 = /* hand */List.append(dealer[/* hand */1], match[0]);
   var dealerWithNewCard_002 = /* money */dealer[/* money */2];
   var dealerWithNewCard_003 = /* name */dealer[/* name */3];
   var dealerWithNewCard_004 = /* src */dealer[/* src */4];
@@ -32470,7 +32449,7 @@ exports.printPlayers = printPlayers;
 // Generated by BUCKLESCRIPT VERSION 2.2.3, PLEASE EDIT WITH CARE
 
 
-var List = __webpack_require__(15);
+var List = __webpack_require__(16);
 var Random = __webpack_require__(63);
 var Caml_obj = __webpack_require__(59);
 var Card$ReactTemplate = __webpack_require__(65);
@@ -32640,7 +32619,7 @@ exports.make = make;
 // Generated by BUCKLESCRIPT VERSION 2.2.3, PLEASE EDIT WITH CARE
 
 
-var List = __webpack_require__(15);
+var List = __webpack_require__(16);
 var $$Array = __webpack_require__(64);
 var React = __webpack_require__(17);
 var ReasonReact = __webpack_require__(20);
@@ -32681,7 +32660,7 @@ exports.make = make;
 // Generated by BUCKLESCRIPT VERSION 2.2.3, PLEASE EDIT WITH CARE
 
 
-var List = __webpack_require__(15);
+var List = __webpack_require__(16);
 var $$Array = __webpack_require__(64);
 var React = __webpack_require__(17);
 var ReasonReact = __webpack_require__(20);

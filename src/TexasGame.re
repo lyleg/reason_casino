@@ -52,7 +52,7 @@ let rec dealToPlayers = (board, playersToBeDelt: players, numCards) =>
 let dealToDealer = (deck, dealer, numCards) => {
   /*need to generalize dealToPlayers to have method for dealer or players */
   let (deltCards, newDeck) = Deck.getCards([], deck, numCards);
-  let dealerWithNewCard = {...dealer, hand: deltCards};
+  let dealerWithNewCard = {...dealer, hand: List.append(dealer.hand, deltCards)};
   (newDeck, dealerWithNewCard)
 };
 
