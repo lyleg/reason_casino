@@ -43,19 +43,25 @@ let make = (_children) => {
       let prompts = [player1Prompt, player2Prompt];
       let (players, dealer) = processPlayers([], state.players, state.dealer, prompts);
       let board = (state.deck, players);
-      let (deck, deltPlayers, round) =
+      let (deck, deltDealer, round) =
         switch state.round {
+        | PreFlop =>
+          let (deck, deltDealer) = dealToPlayers(board, [dealer], 0);
+          (deck, deltDealer |> List.hd, Flop)
         | Flop =>
-          let (deck, deltPlayers) = dealToPlayers(board, players, 1);
-          (deck, deltPlayers, Middle)
+          let (deck, deltDealer) = dealToPlayers(board, [dealer], 3);
+          (deck, deltDealer |> List.hd, Middle)
         | Middle =>
-          let (deck, deltPlayers) = dealToPlayers(board, players, 1);
-          (deck, deltPlayers, River)
+          let (deck, deltDealer) = dealToPlayers(board, [dealer], 1);
+          (deck, deltDealer |> List.hd, River)
         | River =>
-          let (deck, deltPlayers) = dealToPlayers(board, players, 1);
-          (deck, deltPlayers, End)
+          let (deck, deltDealer) = dealToPlayers(board, [dealer], 1);
+          (deck, deltDealer |> List.hd, End)
+        | End =>
+          let (deck, deltDealer) = dealToPlayers(board, [dealer], 0);
+          (deck, deltDealer |> List.hd, End)
         };
-      ReasonReact.Update({...state, round, players: deltPlayers, dealer, deck})
+      ReasonReact.Update({...state, round, players, dealer: deltDealer, deck})
     },
   render: (self) => {
     let round = stringFromRound(self.state.round);
